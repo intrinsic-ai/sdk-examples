@@ -1,0 +1,36 @@
+id {
+  package: "com.example"
+  name: "get_random_number"
+}
+display_name: "Get Random Number Skill"
+vendor {
+  display_name: "Intrinsic"
+}
+documentation {
+  description: "Calls Random Number Service to get a random number between a given range"
+}
+options {
+  supports_cancellation: false
+  python_config {
+    skill_module: "skills.get_random_number.get_random_number"
+    proto_module: "skills.get_random_number.get_random_number_pb2"
+    create_skill: "skills.get_random_number.get_random_number.GetRandomNumber"
+  }
+}
+dependencies {
+  required_equipment {
+    key: "random_number_service"
+    value {
+      capability_names: "com.example.RandomNumberService"
+    }
+  }
+}
+parameter {
+  message_full_name: "com.example.GetRandomNumberParams"
+  default_value {
+    type_url: "type.googleapis.com/com.example.GetRandomNumberParams"
+  }
+}
+return_type {
+  message_full_name: "com.example.GetRandomNumberResult"
+}

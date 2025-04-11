@@ -1,0 +1,56 @@
+load("@ai_intrinsic_sdks//bazel:skills.bzl", "py_skill", "skill_manifest")
+load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
+load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
+
+
+proto_library(
+    name = "get_random_number_proto",
+    srcs = ["get_random_number.proto"],
+)
+
+py_proto_library(
+    name = "get_random_number_py_pb2",
+    deps = [":get_random_number_proto"],
+)
+
+skill_manifest(
+    name = "get_random_number_manifest",
+    src = "get_random_number_manifest.textproto",
+    deps = [":get_random_number_proto"],
+)
+
+py_library(
+    name = "get_random_number",
+    srcs = ["get_random_number.py"],
+    deps = [
+        ":get_random_number_py_pb2",
+        "//services/random_number:random_number_py_pb2_grpc",
+        "//services/random_number:random_number_py_pb2",
+        "@ai_intrinsic_sdks//intrinsic/skills/python:skill_interface",
+        "@ai_intrinsic_sdks//intrinsic/util:decorators",
+        "@com_google_absl_py//absl/logging",
+        "@com_google_protobuf//:protobuf_python",
+        "@ai_intrinsic_sdks//intrinsic/util/grpc:connection",
+        "@ai_intrinsic_sdks//intrinsic/util/grpc:interceptor",
+    ],
+)
+
+py_skill(
+    name = "get_random_number_skill",
+    manifest = ":get_random_number_manifest",
+    deps = [
+        ":get_random_number",
+        "get_random_number_py_pb2",
+    ],
+)
+
+py_test(
+    name = "get_random_number_test",
+    srcs = ["get_random_number_test.py"],
+    deps = [
+        ":get_random_number",
+        "@ai_intrinsic_sdks//intrinsic/skills/testing:skill_test_utils",
+    ],
+    main = "get_random_number_test.py",
+    size = "small",
+)

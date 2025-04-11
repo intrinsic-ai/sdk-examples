@@ -1,0 +1,4 @@
+grpcio==1.65.0
+portpicker==1.6.0
+# psutil is required for portpicker
+psutil==5.9.6

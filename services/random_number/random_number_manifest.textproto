@@ -1,0 +1,27 @@
+metadata {
+  id {
+    package: "com.example"
+    name: "random_number_service"
+  }
+  vendor {
+    display_name: "Intrinsic"
+  }
+  documentation {
+    description: "A random number generator Service example that provides ServiceState"
+  }
+  display_name: "Random Number Service"
+}
+service_def {
+  supports_service_state: true
+  service_proto_prefixes: "/com.example.RandomNumberService/"
+  real_spec {
+    image {
+      archive_filename: "random_number_service_image.tar"
+    }
+  }
+  sim_spec {
+    image {
+      archive_filename: "random_number_service_image.tar"
+    }
+  }
+}
