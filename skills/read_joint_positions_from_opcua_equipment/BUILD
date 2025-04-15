@@ -25,7 +25,7 @@ py_library(
     srcs_version = "PY3",
     deps = [
         ":read_joint_positions_from_opcua_equipment_py_pb2",
-        "@ai_intrinsic_sdks//intrinsic/hardware/gpio:signal_py_pb2",
+        "@ai_intrinsic_sdks//intrinsic/hardware/gpio/v1:signal_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/hardware/opcua_equipment:opcua_equipment_service_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/hardware/opcua_equipment:opcua_equipment_service_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/icon/equipment:equipment_utils_py",
@@ -56,6 +56,6 @@ py_test(
     main = "read_joint_positions_from_opcua_equipment_test.py",
     deps = [
         ":read_joint_positions_from_opcua_equipment",
-        "@ai_intrinsic_sdks//intrinsic/hardware/gpio:signal_py_pb2",
+        "@ai_intrinsic_sdks//intrinsic/hardware/gpio/v1:signal_py_pb2",
     ],
 )

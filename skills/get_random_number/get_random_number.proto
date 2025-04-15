@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package com.example;
+
+message GetRandomNumberParams {
+    int32 range_start = 1;
+    int32 range_end = 2;
+}
+
+message GetRandomNumberResult {
+    int32 result = 1;
+}

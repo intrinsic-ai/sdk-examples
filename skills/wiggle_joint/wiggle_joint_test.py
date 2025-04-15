@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import create_autospec
 from unittest.mock import patch
 
-from intrinsic.icon.proto import service_pb2
+from intrinsic.icon.proto.v1 import service_pb2
 from intrinsic.icon.python import icon_api
 from intrinsic.skills.python import skill_interface
 

@@ -6,7 +6,7 @@ import grpc
 from grpc.framework.foundation import logging_pool
 
 from intrinsic.skills.python import skill_interface
-from intrinsic.hardware.gpio.signal_pb2 import SignalValue
+from intrinsic.hardware.gpio.v1.signal_pb2 import SignalValue
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
 from intrinsic.hardware.opcua_equipment import (
     opcua_equipment_service_pb2_grpc,

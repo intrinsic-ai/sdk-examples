@@ -26,7 +26,7 @@ from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2_grpc
-from intrinsic.hardware.gpio.signal_pb2 import SignalValue
+from intrinsic.hardware.gpio.v1.signal_pb2 import SignalValue
 from skills.write_joint_positions_to_opcua_equipment import (
     write_joint_positions_to_opcua_equipment_pb2,
 )
