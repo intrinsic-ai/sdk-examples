@@ -1,6 +1,6 @@
 load("@ai_intrinsic_sdks//bazel:skills.bzl", "cc_skill", "py_skill", "skill_manifest")
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
-load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+load("@com_google_protobuf//bazel:cc_proto_library.bzl", "cc_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 
 proto_library(
@@ -40,7 +40,7 @@ cc_library(
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_utils",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/status:status",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
     ],
@@ -52,7 +52,7 @@ cc_skill(
     deps = [
         ":wiggle_joint_cc",
         ":wiggle_joint_cc_proto",
-    ]
+    ],
 )
 
 py_proto_library(
@@ -63,7 +63,6 @@ py_proto_library(
 py_library(
     name = "wiggle_joint_py",
     srcs = ["wiggle_joint.py"],
-    srcs_version = "PY3",
     deps = [
         ":wiggle_joint_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/icon/actions:point_to_point_move_py_pb2",
@@ -90,15 +89,15 @@ py_skill(
     deps = [
         ":wiggle_joint_py",
         ":wiggle_joint_py_pb2",
-    ]
+    ],
 )
 
 py_test(
     name = "wiggle_joint_py_test",
+    size = "small",
     srcs = ["wiggle_joint_test.py"],
+    main = "wiggle_joint_test.py",
     deps = [
         ":wiggle_joint_py",
     ],
-    main = "wiggle_joint_test.py",
-    size = "small",
 )

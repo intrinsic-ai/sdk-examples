@@ -22,7 +22,6 @@ skill_manifest(
 py_library(
     name = "write_joint_positions_to_opcua_equipment",
     srcs = ["write_joint_positions_to_opcua_equipment.py"],
-    srcs_version = "PY3",
     deps = [
         ":write_joint_positions_to_opcua_equipment_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/hardware/gpio/v1:signal_py_pb2",

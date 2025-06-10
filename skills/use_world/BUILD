@@ -16,7 +16,6 @@ py_proto_library(
 py_library(
     name = "use_world_py",
     srcs = ["use_world.py"],
-    srcs_version = "PY3",
     deps = [
         ":use_world_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/icon/equipment:equipment_utils_py",
@@ -42,17 +41,17 @@ py_skill(
     deps = [
         ":use_world_py",
         ":use_world_py_pb2",
-    ]
+    ],
 )
 
 py_test(
     name = "use_world_py_test",
+    size = "small",
     srcs = ["use_world_test.py"],
+    main = "use_world_test.py",
     deps = [
         ":use_world_py",
     ],
-    main = "use_world_test.py",
-    size = "small",
 )
 
 cc_proto_library(
@@ -78,7 +77,7 @@ cc_library(
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_utils",
         "@ai_intrinsic_sdks//intrinsic/world/objects:object_world_client",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/status:status",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
     ],
@@ -91,7 +90,7 @@ cc_skill(
     deps = [
         ":use_world_cc",
         ":use_world_cc_proto",
-    ]
+    ],
 )
 
 # Manually run integration test:

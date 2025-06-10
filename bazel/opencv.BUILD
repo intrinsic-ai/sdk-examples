@@ -26,7 +26,7 @@ cmake(
     ],
     lib_source = ":all_srcs",
     out_include_dir = "include/opencv4",
-    out_static_libs	= [
+    out_static_libs = [
         "libopencv_core.a",
         "libopencv_imgproc.a",
         "libopencv_calib3d.a",

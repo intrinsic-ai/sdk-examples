@@ -7,20 +7,20 @@ from intrinsic.util.decorators import overrides
 
 
 class SaySkill(skill_interface.Skill):
-    """Implementation of the say_skill_py skill."""
+  """Implementation of the say_skill_py skill."""
 
-    def __init__(self) -> None:
-        pass
+  def __init__(self) -> None:
+    pass
 
-    @overrides(skill_interface.Skill)
-    def execute(self, request: skill_interface.ExecuteRequest,
-                context: skill_interface.ExecuteContext
-                ) -> None:
+  @overrides(skill_interface.Skill)
+  def execute(
+      self,
+      request: skill_interface.ExecuteRequest,
+      context: skill_interface.ExecuteContext,
+  ) -> None:
 
-        context.canceller.ready()
-        if context.canceller.wait(request.params.wait_ms / 1000.0):
-            raise skill_interface.SkillCancelledError(
-                f"say_skill_cc was cancelled."
-            )
+    context.canceller.ready()
+    if context.canceller.wait(request.params.wait_ms / 1000.0):
+      raise skill_interface.SkillCancelledError(f"say_skill_cc was cancelled.")
 
-        logging.info(request.params.text)
+    logging.info(request.params.text)

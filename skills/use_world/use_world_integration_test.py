@@ -6,15 +6,14 @@ from intrinsic.solutions import deployments
 
 
 def run_integration_test(args):
-    solution = deployments.connect_to_selected_solution()
+  solution = deployments.connect_to_selected_solution()
 
-    executive = solution.executive
-    resources = solution.resources
-    skills = solution.skills
-    world = solution.world
+  executive = solution.executive
+  resources = solution.resources
+  skills = solution.skills
+  world = solution.world
 
-    input(
-        """Follow these instructions to test the use_world skill:
+  input("""Follow these instructions to test the use_world skill:
     1. Create a solution, and set it as your target solution in VS Code
     2. Add to Scene: basler_camera named "basler_camera"
     3. Add to Scene: ur3e_hardware_module named "robot"
@@ -22,49 +21,50 @@ def run_integration_test(args):
     5. Sideload the use_world skill into your solution
 Hit [Enter] when ready""")
 
-    skills.update()
-    
-    camera = resources.basler_camera
-    robot_controller = resources.robot_controller
+  skills.update()
 
-    camera_obj = world.get_object("basler_camera")
-    robot_obj = world.get_object("robot")
+  camera = resources.basler_camera
+  robot_controller = resources.robot_controller
 
-    if args.python:
-        use_world = skills.com.example.use_world_py(
-            camera = camera,
-            robot = robot_controller,
-            object_ref = robot_obj,
-            frame_ref = robot_obj.get_frame("flange"),
-            transform_node_ref = robot_obj.get_frame("flange"))
-    else:
-        use_world = skills.com.example.use_world_cc(
-            camera = camera,
-            robot = robot_controller,
-            object_ref = robot_obj,
-            frame_ref = robot_obj.get_frame("flange"),
-            transform_node_ref = robot_obj.get_frame("flange"))
+  camera_obj = world.get_object("basler_camera")
+  robot_obj = world.get_object("robot")
 
-    tree = bt.BehaviorTree(
-        name="UseWorld Integration Test",
-        root=bt.Sequence([
-            bt.Task(action=use_world, name="Use World"),
-            ]
-        ),
+  if args.python:
+    use_world = skills.com.example.use_world_py(
+        camera=camera,
+        robot=robot_controller,
+        object_ref=robot_obj,
+        frame_ref=robot_obj.get_frame("flange"),
+        transform_node_ref=robot_obj.get_frame("flange"),
+    )
+  else:
+    use_world = skills.com.example.use_world_cc(
+        camera=camera,
+        robot=robot_controller,
+        object_ref=robot_obj,
+        frame_ref=robot_obj.get_frame("flange"),
+        transform_node_ref=robot_obj.get_frame("flange"),
     )
 
-    executive.run(tree)
-    print("Executing use_world skill succeeded!")
+  tree = bt.BehaviorTree(
+      name="UseWorld Integration Test",
+      root=bt.Sequence([
+          bt.Task(action=use_world, name="Use World"),
+      ]),
+  )
+
+  executive.run(tree)
+  print("Executing use_world skill succeeded!")
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser()
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--python', action='store_true', help='Test Python skill')
-    group.add_argument('--cpp', action='store_true', help='Test C++ skill')
-    return parser.parse_args()
+  parser = argparse.ArgumentParser()
+  group = parser.add_mutually_exclusive_group(required=True)
+  group.add_argument("--python", action="store_true", help="Test Python skill")
+  group.add_argument("--cpp", action="store_true", help="Test C++ skill")
+  return parser.parse_args()
 
 
-if __name__ == '__main__':
-    args = parse_arguments()
-    run_integration_test(args)
+if __name__ == "__main__":
+  args = parse_arguments()
+  run_integration_test(args)

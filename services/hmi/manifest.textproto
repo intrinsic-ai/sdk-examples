@@ -1,4 +1,4 @@
-# proto-file: intrinsic/assets/services/proto/service_manifest.proto
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/assets/services/proto/service_manifest.proto
 # proto-message: intrinsic_proto.services.ServiceManifest
 
 metadata {

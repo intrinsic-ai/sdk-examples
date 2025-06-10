@@ -1,5 +1,7 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary")
 load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "intrinsic_service")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 filegroup(
     name = "frontend_files",
@@ -11,24 +13,21 @@ go_binary(
     srcs = ["server.go"],
     data = [":frontend_files"],
     deps = [
-        "@ai_intrinsic_sdks//intrinsic/util/proto:protoio",
         "@ai_intrinsic_sdks//intrinsic/resources/proto:runtime_context_go_proto",
-        "@org_golang_google_grpc//:go_default_library",
+        "@ai_intrinsic_sdks//intrinsic/util/proto:protoio",
+        "@com_google_cloud_go_longrunning//autogen/longrunningpb",
         "@io_bazel_rules_go//go/runfiles",
         "@io_bazel_rules_go//go/tools/bazel",
-        "@com_google_cloud_go_longrunning//autogen/longrunningpb",
+        "@org_golang_google_grpc//:go_default_library",
     ],
 )
-
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 pkg_tar(
     name = "server_layer",
     srcs = [":server"],
-    strip_prefix = "/",
-    include_runfiles = True,
     extension = "tar.gz",
+    include_runfiles = True,
+    strip_prefix = "/",
 )
 
 oci_image(

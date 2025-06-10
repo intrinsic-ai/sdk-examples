@@ -18,25 +18,29 @@ class FakeStopwatchServicer(stopwatch_grpc.StopwatchServiceServicer):
 
 class StartStopwatchTest(unittest.TestCase):
 
-    def test_execute(self):
-        skill = StartStopwatch()
-        server, handle = stu.make_grpc_server_with_resource_handle("stopwatch_service")
-        stopwatch_grpc.add_StopwatchServiceServicer_to_server(FakeStopwatchServicer(), server)
-        server.start()
+  def test_execute(self):
+    skill = StartStopwatch()
+    server, handle = stu.make_grpc_server_with_resource_handle(
+        "stopwatch_service"
+    )
+    stopwatch_grpc.add_StopwatchServiceServicer_to_server(
+        FakeStopwatchServicer(), server
+    )
+    server.start()
 
-        params = StartStopwatchParams()
+    params = StartStopwatchParams()
 
-        context = stu.make_test_execute_context(
-            resource_handles={handle.name: handle},
-        )
-        request = stu.make_test_execute_request(params)
+    context = stu.make_test_execute_context(
+        resource_handles={handle.name: handle},
+    )
+    request = stu.make_test_execute_request(params)
 
-        with self.assertLogs() as log_output:
-            skill.execute(request, context)
+    with self.assertLogs() as log_output:
+      skill.execute(request, context)
 
-        output = log_output[0][3].message
-        self.assertEqual(output, "Successfully started the stopwatch")
+    output = log_output[0][3].message
+    self.assertEqual(output, "Successfully started the stopwatch")
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == "__main__":
+  unittest.main()

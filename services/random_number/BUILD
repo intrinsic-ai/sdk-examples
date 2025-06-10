@@ -1,7 +1,7 @@
+load("@ai_intrinsic_sdks//bazel:python_oci_image.bzl", "python_oci_image")
 load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "intrinsic_service")
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_grpc_library", "py_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
-load("@ai_intrinsic_sdks//bazel:python_oci_image.bzl", "python_oci_image")
 load("@random_number_pip_deps//:requirements.bzl", "requirement")
 
 proto_library(
@@ -68,7 +68,9 @@ intrinsic_service(
 
 py_test(
     name = "random_number_test",
+    size = "small",
     srcs = ["random_number_test.py"],
+    main = "random_number_test.py",
     deps = [
         ":random_number",
         ":random_number_py_pb2",
@@ -76,6 +78,4 @@ py_test(
         requirement("grpcio"),
         requirement("portpicker"),
     ],
-    main = "random_number_test.py",
-    size = "small",
 )
