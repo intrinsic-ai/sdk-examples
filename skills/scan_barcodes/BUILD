@@ -1,8 +1,8 @@
 load("@ai_intrinsic_sdks//bazel:skills.bzl", "cc_skill", "py_skill", "skill_manifest")
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
+load("@com_google_protobuf//bazel:cc_proto_library.bzl", "cc_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 load("@scan_barcodes_pip_deps//:requirements.bzl", "requirement")
-load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 
 proto_library(
     name = "scan_barcodes_proto",
@@ -17,7 +17,6 @@ py_proto_library(
 py_library(
     name = "scan_barcodes_py",
     srcs = ["scan_barcodes.py"],
-    srcs_version = "PY3",
     deps = [
         ":scan_barcodes_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/perception/python/camera:cameras",
@@ -44,23 +43,22 @@ py_skill(
     deps = [
         ":scan_barcodes_py",
         ":scan_barcodes_py_pb2",
-    ]
+    ],
 )
 
 py_test(
     name = "scan_barcodes_py_test",
+    size = "small",
     srcs = ["scan_barcodes_test.py"],
-    deps = [
-        ":scan_barcodes_py",
-        "@rules_python//python/runfiles",
-    ],
     data = [
         "test/EAN-8_0123456.png",
     ],
     main = "scan_barcodes_test.py",
-    size = "small",
+    deps = [
+        ":scan_barcodes_py",
+        "@rules_python//python/runfiles",
+    ],
 )
-
 
 # Export for pip_parse repository rule
 exports_files(["requirements.txt"])
@@ -82,19 +80,19 @@ cc_library(
     hdrs = ["scan_barcodes.h"],
     deps = [
         ":scan_barcodes_cc_proto",
-        "@ai_intrinsic_sdks//intrinsic/util/status:status_conversion_grpc",
-        "@ai_intrinsic_sdks//intrinsic/util/status:status_macros",
         "@ai_intrinsic_sdks//intrinsic/perception/proto:camera_config_cc_proto",
         "@ai_intrinsic_sdks//intrinsic/perception/service/proto:camera_server_cc_grpc",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:equipment_pack",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_utils",
-        "@ai_intrinsic_sdks//intrinsic/util/grpc:grpc",
+        "@ai_intrinsic_sdks//intrinsic/util/grpc",
+        "@ai_intrinsic_sdks//intrinsic/util/status:status_conversion_grpc",
+        "@ai_intrinsic_sdks//intrinsic/util/status:status_macros",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/status:status",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@opencv//:opencv",
+        "@opencv",
     ],
 )
 
@@ -104,5 +102,5 @@ cc_skill(
     deps = [
         ":scan_barcodes_cc",
         ":scan_barcodes_cc_proto",
-    ]
+    ],
 )

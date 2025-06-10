@@ -1,8 +1,8 @@
-load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
-load("@rules_python//python:defs.bzl", "py_binary")
-load("@rules_python//python:proto.bzl", "py_proto_library")
 load("@ai_intrinsic_sdks//bazel:python_oci_image.bzl", "python_oci_image")
 load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "intrinsic_service")
+load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
+load("@com_google_protobuf//bazel:py_proto_library.bzl", "py_proto_library")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 proto_library(
     name = "configurable_service_proto",
@@ -44,6 +44,6 @@ intrinsic_service(
     ],
     manifest = ":configurable_service_manifest.textproto",
     deps = [
-        ":configurable_service_proto"
-    ]
+        ":configurable_service_proto",
+    ],
 )

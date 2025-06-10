@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class StopwatchServicer(stopwatch_grpc.StopwatchServiceServicer):
 
   def __init__(self):
-     self._start_time = None
+    self._start_time = None
 
   def Start(
       self,
@@ -27,13 +27,13 @@ class StopwatchServicer(stopwatch_grpc.StopwatchServiceServicer):
   ) -> stopwatch_proto.StartResponse:
     response = stopwatch_proto.StartResponse()
     if self._start_time is None:
-        self._start_time = time.monotonic()
-        logging.info(f"Starting stopwatch {self._start_time}")
-        response.success = True
+      self._start_time = time.monotonic()
+      logging.info(f'Starting stopwatch {self._start_time}')
+      response.success = True
     else:
-        response.success = False
-        response.error = "Cannot start stopwatch because it is already started"
-        logging.error(response.error)
+      response.success = False
+      response.error = 'Cannot start stopwatch because it is already started'
+      logging.error(response.error)
     return response
 
   def Stop(
@@ -43,53 +43,53 @@ class StopwatchServicer(stopwatch_grpc.StopwatchServiceServicer):
   ) -> stopwatch_proto.StopResponse:
     response = stopwatch_proto.StopResponse()
     if self._start_time is not None:
-        response.time_elapsed = time.monotonic() - self._start_time
-        self._start_time = None
-        logging.info(f"Stopping stopwatch {response.time_elapsed}")
-        response.success = True
+      response.time_elapsed = time.monotonic() - self._start_time
+      self._start_time = None
+      logging.info(f'Stopping stopwatch {response.time_elapsed}')
+      response.success = True
     else:
-        response.success = False
-        response.error = "Cannot stop stopwatch because it is not started"
-        logging.error(response.error)
+      response.success = False
+      response.error = 'Cannot stop stopwatch because it is not started'
+      logging.error(response.error)
     return response
 
 
 def get_runtime_context():
-    with open('/etc/intrinsic/runtime_config.pb', 'rb') as fin:
-        return runtime_context_pb2.RuntimeContext.FromString(fin.read())
+  with open('/etc/intrinsic/runtime_config.pb', 'rb') as fin:
+    return runtime_context_pb2.RuntimeContext.FromString(fin.read())
 
 
 def make_grpc_server(port):
-    server = grpc.server(
-        ThreadPoolExecutor(),
-        options=(('grpc.so_reuseport', 0),),
-    )
+  server = grpc.server(
+      ThreadPoolExecutor(),
+      options=(('grpc.so_reuseport', 0),),
+  )
 
-    stopwatch_grpc.add_StopwatchServiceServicer_to_server(
-        StopwatchServicer(), server
-    )
-    endpoint = f'[::]:{port}'
-    added_port = server.add_insecure_port(endpoint)
-    if added_port != port:
-        raise RuntimeError(f'Failed to use port {port}')
-    return server
+  stopwatch_grpc.add_StopwatchServiceServicer_to_server(
+      StopwatchServicer(), server
+  )
+  endpoint = f'[::]:{port}'
+  added_port = server.add_insecure_port(endpoint)
+  if added_port != port:
+    raise RuntimeError(f'Failed to use port {port}')
+  return server
 
 
 def main():
-    context = get_runtime_context()
+  context = get_runtime_context()
 
-    logging.info(f"Starting Stopwatch service on port: {context.port}")
+  logging.info(f'Starting Stopwatch service on port: {context.port}')
 
-    server = make_grpc_server(context.port)
-    server.start()
+  server = make_grpc_server(context.port)
+  server.start()
 
-    logging.info('--------------------------------')
-    logging.info(f'-- Stopwatch service listening on port {context.port}')
-    logging.info('--------------------------------')
+  logging.info('--------------------------------')
+  logging.info(f'-- Stopwatch service listening on port {context.port}')
+  logging.info('--------------------------------')
 
-    server.wait_for_termination()
+  server.wait_for_termination()
 
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-    main()
+  logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+  main()

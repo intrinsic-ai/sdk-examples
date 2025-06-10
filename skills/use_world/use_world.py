@@ -17,6 +17,7 @@ from skills.use_world import use_world_pb2
 ROBOT_EQUIPMENT_SLOT: str = "robot"
 CAMERA_EQUIPMENT_SLOT: str = "camera"
 
+
 class UseWorld(skill_interface.Skill):
   """Example skill demonstrating how to use the world service in skills.
 
@@ -42,7 +43,9 @@ class UseWorld(skill_interface.Skill):
     )
 
     # Resolve FrameReference.
-    frame: object_world_resources.Frame = world.get_frame(request.params.frame_ref)
+    frame: object_world_resources.Frame = world.get_frame(
+        request.params.frame_ref
+    )
 
     # Resolve TransformNodeReference, obtaining an instance of either
     # WorldObject or Frame.
@@ -76,8 +79,7 @@ class UseWorld(skill_interface.Skill):
     # Update the robot joints, operating on the robot in the belief world.
     # Note the values in this example are valid only for a UR3e robot.
     world.update_joint_positions(
-        robot_kinematic_obj,
-        [1, -1.725, 1.111, -1.219, -1.523, 3.14]
+        robot_kinematic_obj, [1, -1.725, 1.111, -1.219, -1.523, 3.14]
     )
 
     # WorldObject representing the world origin. Always present.

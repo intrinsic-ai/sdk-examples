@@ -2,7 +2,6 @@ load("@ai_intrinsic_sdks//bazel:skills.bzl", "py_skill", "skill_manifest")
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 
-
 proto_library(
     name = "start_stopwatch_proto",
     srcs = ["start_stopwatch.proto"],
@@ -24,16 +23,16 @@ py_library(
     srcs = ["start_stopwatch.py"],
     deps = [
         ":start_stopwatch_py_pb2",
-        "//services/stopwatch:stopwatch_service_py_pb2_grpc",
         "//services/stopwatch:stopwatch_service_py_pb2",
+        "//services/stopwatch:stopwatch_service_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/skills/proto:equipment_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/skills/python:proto_utils",
         "@ai_intrinsic_sdks//intrinsic/skills/python:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/util:decorators",
-        "@com_google_absl_py//absl/logging",
-        "@com_google_protobuf//:protobuf_python",
         "@ai_intrinsic_sdks//intrinsic/util/grpc:connection",
         "@ai_intrinsic_sdks//intrinsic/util/grpc:interceptor",
+        "@com_google_absl_py//absl/logging",
+        "@com_google_protobuf//:protobuf_python",
     ],
 )
 

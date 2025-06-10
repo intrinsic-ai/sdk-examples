@@ -16,7 +16,6 @@ py_proto_library(
 py_library(
     name = "validate_pose_py",
     srcs = ["validate_pose.py"],
-    srcs_version = "PY3",
     deps = [
         ":validate_pose_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/skills/python:proto_utils",
@@ -40,18 +39,18 @@ py_skill(
     deps = [
         ":validate_pose_py",
         ":validate_pose_py_pb2",
-    ]
+    ],
 )
 
 py_test(
     name = "validate_pose_py_test",
-    srcs = ["validate_pose_test.py"],
-    deps = [
-        "@ai_intrinsic_sdks//intrinsic/math/python:pose3",
-        ":validate_pose_py",
-    ],
-    main = "validate_pose_test.py",
     size = "small",
+    srcs = ["validate_pose_test.py"],
+    main = "validate_pose_test.py",
+    deps = [
+        ":validate_pose_py",
+        "@ai_intrinsic_sdks//intrinsic/math/python:pose3",
+    ],
 )
 
 cc_proto_library(
@@ -71,12 +70,12 @@ cc_library(
     hdrs = ["validate_pose.h"],
     deps = [
         ":validate_pose_cc_proto",
-        "@ai_intrinsic_sdks//intrinsic/util/status:status_macros",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_utils",
+        "@ai_intrinsic_sdks//intrinsic/util/status:status_macros",
         "@ai_intrinsic_sdks//intrinsic/world/objects:object_world_client",
         "@com_google_absl//absl/log",
-        "@com_google_absl//absl/status:status",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
     ],
@@ -89,5 +88,5 @@ cc_skill(
     deps = [
         ":validate_pose_cc",
         ":validate_pose_cc_proto",
-    ]
+    ],
 )

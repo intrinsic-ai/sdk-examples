@@ -19,56 +19,68 @@ class FakeStopwatchServicer(stopwatch_grpc.StopwatchServiceServicer):
 
 class StopStopwatchTest(unittest.TestCase):
 
-    def test_get_footprint(self):
-        skill = StopStopwatch()
-        server, handle = stu.make_grpc_server_with_resource_handle("stopwatch_service")
-        stopwatch_grpc.add_StopwatchServiceServicer_to_server(FakeStopwatchServicer(), server)
-        server.start()
+  def test_get_footprint(self):
+    skill = StopStopwatch()
+    server, handle = stu.make_grpc_server_with_resource_handle(
+        "stopwatch_service"
+    )
+    stopwatch_grpc.add_StopwatchServiceServicer_to_server(
+        FakeStopwatchServicer(), server
+    )
+    server.start()
 
-        params = StopStopwatchParams()
+    params = StopStopwatchParams()
 
-        context = stu.make_test_get_footprint_context(
-            resource_handles={handle.name: handle},
-        )
-        request = stu.make_test_get_footprint_request(params)
+    context = stu.make_test_get_footprint_context(
+        resource_handles={handle.name: handle},
+    )
+    request = stu.make_test_get_footprint_request(params)
 
-        result = skill.get_footprint(request, context)
-        self.assertTrue(result.lock_the_universe)
+    result = skill.get_footprint(request, context)
+    self.assertTrue(result.lock_the_universe)
 
-    def test_preview(self):
-        skill = StopStopwatch()
-        server, handle = stu.make_grpc_server_with_resource_handle("stopwatch_service")
-        stopwatch_grpc.add_StopwatchServiceServicer_to_server(FakeStopwatchServicer(), server)
-        server.start()
+  def test_preview(self):
+    skill = StopStopwatch()
+    server, handle = stu.make_grpc_server_with_resource_handle(
+        "stopwatch_service"
+    )
+    stopwatch_grpc.add_StopwatchServiceServicer_to_server(
+        FakeStopwatchServicer(), server
+    )
+    server.start()
 
-        params = StopStopwatchParams()
+    params = StopStopwatchParams()
 
-        context = stu.make_test_preview_context(
-            resource_handles={handle.name: handle},
-        )
-        request = stu.make_test_preview_request(params)
+    context = stu.make_test_preview_context(
+        resource_handles={handle.name: handle},
+    )
+    request = stu.make_test_preview_request(params)
 
-        # Update this test when you implement preview
-        with self.assertRaises(NotImplementedError):
-            skill.preview(request, context)
+    # Update this test when you implement preview
+    with self.assertRaises(NotImplementedError):
+      skill.preview(request, context)
 
-    def test_execute(self):
-        skill = StopStopwatch()
-        server, handle = stu.make_grpc_server_with_resource_handle("stopwatch_service")
-        stopwatch_grpc.add_StopwatchServiceServicer_to_server(FakeStopwatchServicer(), server)
-        server.start()
+  def test_execute(self):
+    skill = StopStopwatch()
+    server, handle = stu.make_grpc_server_with_resource_handle(
+        "stopwatch_service"
+    )
+    stopwatch_grpc.add_StopwatchServiceServicer_to_server(
+        FakeStopwatchServicer(), server
+    )
+    server.start()
 
-        params = StopStopwatchParams()
+    params = StopStopwatchParams()
 
-        context = stu.make_test_execute_context(
-            resource_handles={handle.name: handle},
-        )
-        request = stu.make_test_execute_request(params)
+    context = stu.make_test_execute_context(
+        resource_handles={handle.name: handle},
+    )
+    request = stu.make_test_execute_request(params)
 
-        result = skill.execute(request, context)
+    result = skill.execute(request, context)
 
-        self.assertEqual(result.time_elapsed, 42)
+    self.assertEqual(result.time_elapsed, 42)
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == "__main__":
+  unittest.main()
