@@ -80,8 +80,8 @@ cc_library(
     hdrs = ["scan_barcodes.h"],
     deps = [
         ":scan_barcodes_cc_proto",
-        "@ai_intrinsic_sdks//intrinsic/perception/proto:camera_config_cc_proto",
-        "@ai_intrinsic_sdks//intrinsic/perception/service/proto:camera_server_cc_grpc",
+        "@ai_intrinsic_sdks//intrinsic/perception/proto/v1:camera_config_cc_proto",
+        "@ai_intrinsic_sdks//intrinsic/perception/proto/v1:camera_service_cc_grpc",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:equipment_pack",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_utils",
