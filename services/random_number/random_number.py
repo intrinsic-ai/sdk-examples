@@ -29,8 +29,8 @@ class RandomNumberServicer(
   """
 
   def __init__(self):
-    self._state = state_proto.State(
-        state_code=state_proto.State.STATE_CODE_ENABLED,
+    self._state = state_proto.SelfState(
+        state_code=state_proto.SelfState.STATE_CODE_ENABLED,
     )
 
     self._curr_num_requests = 0
@@ -45,8 +45,8 @@ class RandomNumberServicer(
       # This is to force an error for our example.
       timestamp = timestamp_proto.Timestamp()
       timestamp.FromDatetime(datetime.datetime.now())
-      self._state = state_proto.State(
-          state_code=state_proto.State.STATE_CODE_ERROR,
+      self._state = state_proto.SelfState(
+          state_code=state_proto.SelfState.STATE_CODE_ERROR,
           extended_status=ext_status_proto.ExtendedStatus(
               title="An error occurred.",
               user_report=ext_status_proto.ExtendedStatus.UserReport(
@@ -59,7 +59,7 @@ class RandomNumberServicer(
           ),
       )
 
-    if self._state.state_code is state_proto.State.STATE_CODE_DISABLED:
+    if self._state.state_code is state_proto.SelfState.STATE_CODE_DISABLED:
       status = error_handling.make_grpc_status(
           code=grpc.StatusCode.FAILED_PRECONDITION,
           message=(
@@ -73,7 +73,7 @@ class RandomNumberServicer(
           f" enable the Service."
       )
       context.abort_with_status(status)
-    elif self._state.state_code is state_proto.State.STATE_CODE_ERROR:
+    elif self._state.state_code is state_proto.SelfState.STATE_CODE_ERROR:
       status = error_handling.make_grpc_status(
           code=grpc.StatusCode.FAILED_PRECONDITION,
           message=(
@@ -105,7 +105,7 @@ class RandomNumberServicer(
       self,
       request: state_proto.GetStateRequest,
       context: grpc.ServicerContext,
-  ) -> state_proto.State:
+  ) -> state_proto.SelfState:
     return self._state
 
   def Enable(
@@ -113,15 +113,15 @@ class RandomNumberServicer(
       request: state_proto.EnableRequest,
       context: grpc.ServicerContext,
   ) -> state_proto.EnableResponse:
-    if self._state.state_code == state_proto.State.STATE_CODE_ERROR:
+    if self._state.state_code == state_proto.SelfState.STATE_CODE_ERROR:
       logging.info("Error was acknowledged, resetting request count.")
       self._curr_num_requests = 0
-    elif self._state.state_code == state_proto.State.STATE_CODE_ENABLED:
+    elif self._state.state_code == state_proto.SelfState.STATE_CODE_ENABLED:
       # Already enabled, do nothing.
       return state_proto.EnableResponse()
 
-    self._state = state_proto.State(
-        state_code=state_proto.State.STATE_CODE_ENABLED,
+    self._state = state_proto.SelfState(
+        state_code=state_proto.SelfState.STATE_CODE_ENABLED,
     )
 
     return state_proto.EnableResponse()
@@ -131,16 +131,16 @@ class RandomNumberServicer(
       request: state_proto.DisableRequest,
       context: grpc.ServicerContext,
   ) -> state_proto.DisableResponse:
-    if self._state.state_code == state_proto.State.STATE_CODE_ERROR:
+    if self._state.state_code == state_proto.SelfState.STATE_CODE_ERROR:
       raise grpc.RpcError(
           grpc.StatusCode.FailedPrecondition,
           "Cannot disable Service in error state.",
       )
-    elif self._state.state_code == state_proto.State.STATE_CODE_DISABLED:
+    elif self._state.state_code == state_proto.SelfState.STATE_CODE_DISABLED:
       return state_proto.DisableResponse()
 
-    self._state = state_proto.State(
-        state_code=state_proto.State.STATE_CODE_DISABLED
+    self._state = state_proto.SelfState(
+        state_code=state_proto.SelfState.STATE_CODE_DISABLED
     )
 
     return state_proto.DisableResponse()

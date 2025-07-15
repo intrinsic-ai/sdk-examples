@@ -5,7 +5,6 @@ load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 proto_library(
     name = "write_joint_positions_to_opcua_equipment_proto",
     srcs = ["write_joint_positions_to_opcua_equipment.proto"],
-    deps = ["@ai_intrinsic_sdks//intrinsic/icon/proto:joint_space_proto"],
 )
 
 py_proto_library(
