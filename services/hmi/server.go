@@ -13,17 +13,19 @@ import (
 	"net/http"
 	"strings"
 
+	sssgrpcpb "intrinsic/assets/services/proto/v1/system_service_state_go_grpc_proto"
 	btpb "intrinsic/executive/proto/behavior_tree_go_proto"
 	eempb "intrinsic/executive/proto/executive_execution_mode_go_proto"
 	esvcgrpcpb "intrinsic/executive/proto/executive_service_go_grpc_proto"
 	rmpb "intrinsic/executive/proto/run_metadata_go_proto"
-	rcpb "intrinsic/resources/proto/runtime_context_go_proto"
 	ssvcgrpcpb "intrinsic/frontend/solution_service/proto/solution_service_go_grpc_proto"
+	rcpb "intrinsic/resources/proto/runtime_context_go_proto"
 
 	lropb "cloud.google.com/go/longrunning/autogen/longrunningpb"
 	"github.com/bazelbuild/rules_go/go/runfiles"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 const (
@@ -35,7 +37,7 @@ const (
 	// defaultBaseURLFormat will work correctly when the on-prem device is reached
 	// at the root path in a browser (most common). It is used to populate a
 	// <base> tag in HTML. This ensures that relative URLs are resolved correctly.
-	defaultBaseURLFormat      = "/ext/services/%s/"
+	defaultBaseURLFormat = "/ext/services/%s/"
 )
 
 // Providing these values as flags allows for local testing. The README
@@ -170,7 +172,7 @@ func (e *executiveClient) start(ctx context.Context, bt *btpb.BehaviorTree) (*ex
 	// Start the newly created operation. This will actually start the execution
 	// of the behavior tree.
 	res, err = e.cl.StartOperation(ctx, &esvcgrpcpb.StartOperationRequest{
-		Name:           res.GetName(),
+		Name: res.GetName(),
 		// These could be made configurable as a new functionality. The execution
 		// mode enables step-wise (ExecutionMode_EXECUTION_MODE_STEP_WISE) or
 		// continuous (ExecutionMode_EXECUTION_MODE_NORMAL) execution and the
@@ -191,10 +193,11 @@ func (e *executiveClient) start(ctx context.Context, bt *btpb.BehaviorTree) (*ex
 // server encapsulates the HTTP server providing the frontend and API for the
 // HMI service.
 type server struct {
-	baseURL        string
-	indexTemplate  *template.Template
-	executive      *executiveClient
-	solutionClient ssvcgrpcpb.SolutionServiceClient
+	baseURL                  string
+	indexTemplate            *template.Template
+	executive                *executiveClient
+	solutionClient           ssvcgrpcpb.SolutionServiceClient
+	systemServiceStateClient sssgrpcpb.SystemServiceStateClient
 }
 
 // start runs the HTTP server at the given address.
@@ -210,6 +213,13 @@ func (s *server) start(address string) error {
 	http.HandleFunc("POST /api/executive/{id}/stop", s.executiveStop)
 	http.HandleFunc("POST /api/executive/start", s.executiveStart)
 	http.HandleFunc("GET /api/solution_service/list", s.listProcesses)
+
+	// API handlers for system service states.
+	http.HandleFunc("GET /api/serviceStates", s.listServiceStates)
+	http.HandleFunc("GET /api/serviceStates/{name}/get", s.getServiceState)
+	http.HandleFunc("POST /api/serviceStates/{name}/enable", s.enableService)
+	http.HandleFunc("POST /api/serviceStates/{name}/disable", s.disableService)
+	http.HandleFunc("POST /api/serviceStates/{name}/restart", s.restartService)
 
 	log.Printf("Listening at %s", address)
 	return http.ListenAndServe(address, nil)
@@ -255,7 +265,7 @@ func (s *server) listProcesses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Support for traversing multiple/all pages needs to be added if there
-	// may be more than {{PageSize}} behavior trees. 
+	// may be more than {{PageSize}} behavior trees.
 	if res.NextPageToken != "" {
 		w.WriteHeader(http.StatusInternalServerError)
 		writeJSON(w, wrapErr(fmt.Errorf("too many behavior trees, pagination needs to be supported: %w", err)))
@@ -271,6 +281,107 @@ func (s *server) listProcesses(w http.ResponseWriter, r *http.Request) {
 		Names: btNames,
 	}
 	writeJSON(w, btList)
+}
+
+// listServiceStates lists the states of Services in the solution.
+func (s *server) listServiceStates(w http.ResponseWriter, r *http.Request) {
+	response, err := s.systemServiceStateClient.ListInstanceStates(r.Context(), &sssgrpcpb.ListInstanceStatesRequest{})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("failed to list service states: %w", err)))
+		return
+	}
+	b, err := protojson.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("failed to encode response: %w", err)))
+		return
+	}
+	w.Header().Set("content-type", "application/json")
+	w.Write(b)
+}
+
+// getServiceState gets the state of a Service in the solution.
+func (s *server) getServiceState(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	if name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		writeJSON(w, wrapErr(errors.New("missing service name in path")))
+		return
+	}
+	response, err := s.systemServiceStateClient.GetInstanceState(r.Context(), &sssgrpcpb.GetInstanceStateRequest{
+		Name: name,
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("could not get service state: %w", err)))
+		return
+	}
+	b, err := protojson.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("failed to encode response: %w", err)))
+		return
+	}
+	w.Header().Set("content-type", "application/json")
+	w.Write(b)
+}
+
+// enableService enables a Service in the solution.
+func (s *server) enableService(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	if name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		writeJSON(w, wrapErr(errors.New("missing service name in path")))
+		return
+	}
+	res, err := s.systemServiceStateClient.EnableService(r.Context(), &sssgrpcpb.EnableServiceRequest{
+		Name: name,
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("could not enable service: %w", err)))
+		return
+	}
+	writeJSON(w, res)
+}
+
+// disableService disables a Service in the solution.
+func (s *server) disableService(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	if name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		writeJSON(w, wrapErr(errors.New("missing service name in path")))
+		return
+	}
+	res, err := s.systemServiceStateClient.DisableService(r.Context(), &sssgrpcpb.DisableServiceRequest{
+		Name: name,
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("could not disable service: %w", err)))
+		return
+	}
+	writeJSON(w, res)
+}
+
+// restartService restarts a Service in the solution.
+func (s *server) restartService(w http.ResponseWriter, r *http.Request) {
+	name := r.PathValue("name")
+	if name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		writeJSON(w, wrapErr(errors.New("missing service name in path")))
+		return
+	}
+	res, err := s.systemServiceStateClient.RestartService(r.Context(), &sssgrpcpb.RestartServiceRequest{
+		Name: name,
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		writeJSON(w, wrapErr(fmt.Errorf("could not restart service: %w", err)))
+		return
+	}
+	writeJSON(w, res)
 }
 
 // executiveStop stops the executive operation with the ID in the path.
@@ -313,7 +424,7 @@ func (s *server) executiveStart(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, wrapErr(errors.New("processName must not be empty")))
 		return
 	}
-	btReq:= &ssvcgrpcpb.GetBehaviorTreeRequest{
+	btReq := &ssvcgrpcpb.GetBehaviorTreeRequest{
 		Name: req.ProcessName,
 	}
 	bt, err := s.solutionClient.GetBehaviorTree(r.Context(), btReq)
@@ -380,7 +491,8 @@ func main() {
 			// Create a gRPC client for the executive service.
 			cl: esvcgrpcpb.NewExecutiveServiceClient(conn),
 		},
-		solutionClient: ssvcgrpcpb.NewSolutionServiceClient(conn),
+		solutionClient:           ssvcgrpcpb.NewSolutionServiceClient(conn),
+		systemServiceStateClient: sssgrpcpb.NewSystemServiceStateClient(conn),
 	}
 
 	if err := server.start(address); err != nil {

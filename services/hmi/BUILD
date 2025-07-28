@@ -14,6 +14,7 @@ go_binary(
     srcs = ["server.go"],
     data = [":frontend_files"],
     deps = [
+        "@ai_intrinsic_sdks//intrinsic/assets/services/proto/v1:system_service_state_go_grpc_proto",
         "@ai_intrinsic_sdks//intrinsic/executive/proto:behavior_tree_go_proto",
         "@ai_intrinsic_sdks//intrinsic/executive/proto:executive_execution_mode_go_proto",
         "@ai_intrinsic_sdks//intrinsic/executive/proto:executive_service_go_grpc_proto",
