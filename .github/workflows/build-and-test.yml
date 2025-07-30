@@ -19,20 +19,22 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: false
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - name: Determine Bazel version
-        run: |
-          echo "DETECTED_BAZEL_VERSION=$(bazel --version | awk '{print $NF}')" >> $GITHUB_OUTPUT
-        id: bazel_version
-      - name: Cache Bazel
-        uses: actions/cache@2f8e54208210a422b2efd51efaa6bd6d7ca8920f  # v3.4.3
+
+      - uses: bazel-contrib/setup-bazel@4fd964a13a440a8aeb0be47350db2fc640f19ca8  #v0.15.0
         with:
-          path: |
-            ~/.cache/bazel
-          key: ${{ runner.os }}-bazel-${{ steps.bazel_version.outputs.DETECTED_BAZEL_VERSION }}-${{ hashFiles('.bazelversion', '.bazelrc', 'WORKSPACE', 'WORKSPACE.bazel', 'MODULE.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-${{ steps.bazel_version.outputs.DETECTED_BAZEL_VERSION }}-
+         # Avoid downloading Bazel every time.
+         bazelisk-cache: true
+         # Store build cache per workflow.
+         disk-cache: true 
+         # Cache external/ repositories
+         external-cache: true
+         # Share repository cache between workflows.
+         repository-cache: true
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+
       - name: Update SDK to latest
         run: bazel fetch --repo=@ai_intrinsic_sdks --force
+
       - name: Build And Test
         run: bazel test --verbose_failures --test_output=errors --nobuild_tests_only //...
