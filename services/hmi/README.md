@@ -3,7 +3,7 @@
 This example implements a service-based HMI for Flowstate.
 
 > [!IMPORTANT]
-> This HMI service is based on the ["Create an HMI service"](https://flowstate.intrinsic.ai/docs/guides/build_with_code/develop_a_service/implement_service_scenarios/create_hmi_service/) guide in the Flowstate documentation.
+> This HMI service is based on the ["Create an HMI service"](https://flowstate.intrinsic.ai/docs/assets/create_new_assets/create_services/implement_service_scenarios/create_hmi_service/) guide in the Flowstate documentation.
 > Follows the steps in the guide to install the HMI service in your solution.
 
 ## Features
@@ -12,6 +12,7 @@ This example implements a service-based HMI for Flowstate.
 * stop execution
 * pause/resume execution
 * view execution status (inluding errors)
+* query and modify the state of service instances in a solution
 
 ## Test locally
 
