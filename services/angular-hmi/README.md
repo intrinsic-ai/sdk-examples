@@ -3,7 +3,7 @@
 This example implements a service-based HMI for Flowstate.
 
 > [!IMPORTANT]
-> This HMI service is based on the ["Create an HMI service"](https://flowstate.intrinsic.ai/docs/guides/build_with_code/develop_a_service/implement_service_scenarios/create_hmi_service/) guide in the Flowstate documentation.
+> This HMI service is based on the ["Create an HMI service"](https://flowstate.intrinsic.ai/docs/assets/create_new_assets/create_services/implement_service_scenarios/create_hmi_service/) guide in the Flowstate documentation.
 
 ## Features
 
@@ -70,5 +70,3 @@ It should generate a `.tar` ready to be deployed, take note of the output locati
 ```sh
 inctl service install bazel-bin/services/angular-hmi/hmi_angular_service.bundle.tar --org=ORGANIZATION_NAME --address="workcell.lan:17080"
 ```
-
-

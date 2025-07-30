@@ -19,13 +19,20 @@
     <div class="box">
       Select a behavior tree to execute:
       <select id="bt-list">
-        <option value="">Select an option</option> 
+        <option value="">Select an option</option>
       </select>
     </div>
     <button disabled class="button is-success" id="start">
       Start Process
     </button>
     <button disabled class="button is-danger" id="stop">Stop</button>
+    <div class="box" style="margin-top: 32px">
+      <button class="button" id="states-list" style="margin-bottom: 16px">
+        List/refresh service states
+      </button>
+      <div id="service-states" class="content"></div>
+    </div>
+    <div style="display: none" class="notification" id="state-result"></div>
   </div>
 </section>
 
@@ -33,20 +40,24 @@
   let operationId = "";
   let behaviorTreeName = "";
   let showStatus = false;
+  let states = [];
 
   const startEl = document.getElementById("start");
   const stopEl = document.getElementById("stop");
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
   const btListEl = document.getElementById("bt-list");
+  const serviceStatesEl = document.getElementById("service-states");
+  const listStatesEl = document.getElementById("states-list");
   refreshStatus();
+
 
   btListEl.addEventListener('mousedown', async () => {
     // Clear existing options.
-    btListEl.innerHTML = '<option value="">Select an option</option>'; 
+    btListEl.innerHTML = '<option value="">Select an option</option>';
 
     // Add all currently saved behavior trees in solution.
-    const options = await getBehaviorTrees(); 
+    const options = await getBehaviorTrees();
     options.forEach(optionText => {
       const option = document.createElement('option');
       option.value = optionText;
@@ -64,6 +75,10 @@
   stopEl.addEventListener("click", stop);
   startEl.addEventListener("click", () => {
     start(behaviorTreeName);
+  });
+
+  listStatesEl.addEventListener("click", async () => {
+    states = await listServiceStates();
   });
 
   async function refreshStatus() {
@@ -87,7 +102,7 @@
             stopEl.disabled = true;
           }
         } else {
-          startEl.disabled = true;
+          startEl.disabled = false;
           stopEl.disabled = true;
         }
 
@@ -110,8 +125,87 @@
         operationId = "";
       }
     }
-      // Refresh the current status every second.
-      setTimeout(refreshStatus, 1000);
+
+    if (states.length > 0) {
+      let str = `
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>State</th>
+      <th>Enable</th>
+      <th>Disable</th>
+      <th>Restart</th>
+    </tr>
+  </thead>
+  <tbody>
+`;
+      states.forEach(function(state) {
+        let row = '<tr>'
+        row += '<td>' + state.name + '</td>';
+        row += '<td>' + state.state.stateCode + '</td>';
+        row += `<td><button class="button" id="enable-${state.name}">Enable</button></td>`;
+        row += `<td><button class="button" id="disable-${state.name}">Disable</button></td>`;
+        row += `<td><button class="button" id="restart-${state.name}">Restart</button></td>`;
+        row += '</tr>';
+        str += row;
+      });
+      str += `
+      </tbody>
+      </table>
+      `;
+      serviceStatesEl.innerHTML = str;
+      states.forEach(function(state) {
+        addStateManagementHandlers(state.name);
+      })
+    }
+
+    // Refresh the current status every second.
+    setTimeout(refreshStatus, 1000);
+  }
+
+  function addStateManagementHandlers(name) {
+    const notificationEl = document.getElementById("state-result");
+    stateHandler(document.getElementById(`enable-${name}`), "enable", name, notificationEl);
+    stateHandler(document.getElementById(`disable-${name}`), "disable", name, notificationEl);
+    stateHandler(document.getElementById(`restart-${name}`), "restart", name, notificationEl);
+  }
+
+  function stateHandler(buttonEl, stateMethod, name, notificationEl) {
+    buttonEl.addEventListener("click", async () => {
+      try {
+          notificationEl.style.display = "none";
+          const req = new Request(`api/serviceStates/${name}/${stateMethod}`, {
+            method: 'POST',
+          });
+          const res = await fetch(req);
+          const s = await res.json();
+          if (s.error) {
+            notificationEl.classList.add('is-danger');
+            notificationEl.classList.remove('is-success');
+            notificationEl.textContent = s.error;
+          } else {
+            notificationEl.classList.remove('is-danger');
+            notificationEl.classList.add('is-success');
+            notificationEl.textContent = `"${stateMethod}" successful.`;
+          }
+          notificationEl.style.display = "block";
+        } catch (e) {
+          notificationEl.classList.add('is-danger');
+          notificationEl.classList.remove('is-success');
+          notificationEl.textContent = `Failed to ${stateMethod} ${name}`;
+          notificationEl.style.display = "block";
+        }
+    })
+  }
+
+  async function listServiceStates() {
+    const res = await fetch("api/serviceStates");
+    const s = await res.json();
+    if(Array.isArray(s['states'])) {
+      return s['states'];
+    }
+    return [];
   }
 
   async function getBehaviorTrees() {
@@ -121,7 +215,7 @@
       s = await res.json();
       if(Array.isArray(s['names']) && s['names'].length > 0) {
         return s['names'];
-      } 
+      }
     } catch (e) {
       console.log(s.error);
     }
