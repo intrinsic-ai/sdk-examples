@@ -1,0 +1,81 @@
+name: Flowstate CI 
+on: 
+  workflow_dispatch:
+    inputs:
+      INTRINSIC_SOLUTION:
+        description: 'Flowstate Solution ID'
+        required: true
+        type: string
+      INTRINSIC_ORGANIZATION:
+        description: 'Flowstate Organization'
+        required: true
+        default: 'intrinsic@intrinsic-prod-us'
+        type: string
+      INTRINSIC_TOOL_VERSION:
+        description: 'Version of Intrinsic tools to use'
+        required: false
+        default: 'latest'
+
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    env:
+      INTRINSIC_ORGANIZATION: ${{ github.event.inputs.INTRINSIC_ORGANIZATION }}
+      INTRINSIC_SOLUTION: ${{ github.event.inputs.INTRINSIC_SOLUTION }}
+      INTRINSIC_API_KEY: ${{ secrets.INTRINSIC_API_KEY }}
+      INTRINSIC_TOOL_VERSION: ${{ github.event.inputs.INTRINSIC_TOOL_VERSION }}
+      SKILLS_UNDER_TEST: >-
+        //skills/start_stopwatch
+        //skills/stop_stopwatch
+      SERVICES_UNDER_TEST: >-
+        //services/stopwatch
+
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be  #v1.3.1
+        with:
+          tool-cache: verbose_failures
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: false
+
+      - uses: bazel-contrib/setup-bazel@4fd964a13a440a8aeb0be47350db2fc640f19ca8  #v0.15.0
+        with:
+         # Avoid downloading Bazel every time.
+         bazelisk-cache: true
+         # Store build cache per workflow.
+         disk-cache: ${{ github.workflow }} 
+         # Cache external/ repositories
+         external-cache: true
+         # Share repository cache between workflows.
+         repository-cache: true
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+
+      - name: Setup Intrinsic Tools
+        uses: ./.github/actions/setup-intrinsic-tools
+        with:
+          version: ${INTRINSIC_TOOL_VERSION}
+
+      - name: Authenticate to Intrinsic
+        uses: ./.github/actions/auth-intrinsic
+        with:
+          api-key: ${INTRINSIC_API_KEY}
+          organization: ${INTRINSIC_ORGANIZATION}
+
+      - name: Prepare Targets
+        id: prep_targets
+        run: |
+          TARGETS=""
+          for path in ${{ env.SKILLS_UNDER_TEST }}; do
+            TARGETS="${TARGETS} ${path}/..."
+          done
+          for path in ${{ env.SERVICES_UNDER_TEST }}; do
+            TARGETS="${TARGETS} ${path}/..."
+          done
+          echo "Computed Targets: ${TARGETS}"
+          echo "target_list=${TARGETS}" >> "$GITHUB_OUTPUT"

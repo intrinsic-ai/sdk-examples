@@ -1,0 +1,32 @@
+name: 'Authenticate to Intrinsic'
+description: 'Logs in to the Intrinsic platform using an API key and organization.'
+
+inputs:
+  api-key:
+    description: 'The Intrinsic API key for authentication.'
+    required: true
+  organization:
+    description: 'The Intrinsic organization to log into.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Login to Intrinsic
+      shell: bash
+      run: |
+        echo "Logging into Intrinsic organization: ${{ inputs.organization }}..."
+        # Securely pipe the API key to the login command
+        echo "${{ inputs.api-key }}" | inctl auth login --batch --org "${{ inputs.organization }}"
+        echo "✅ Login successful."
+
+    # Can be removed after batch login correctly supports organizations
+    - name: Create Organization config file
+      shell: bash
+      run: |
+        ORGANIZATION="${{ inputs.organization }}"
+        PROJECT_NAME="${ORGANIZATION#*@}"
+        CONFIG_DIR="$HOME/.config/intrinsic/organizations"
+        CONFIG_FILE="$CONFIG_DIR/${ORGANIZATION}.json"
+        mkdir -p "$CONFIG_DIR"
+        printf '{\n  "org": "%s",\n  "project": "%s"\n}\n' "$ORGANIZATION" "$PROJECT_NAME" > "$CONFIG_FILE"
