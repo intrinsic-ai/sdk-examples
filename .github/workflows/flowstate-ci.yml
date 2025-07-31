@@ -74,5 +74,4 @@ jobs:
             --org=${INTRINSIC_ORGANIZATION} \
             --solution=${INTRINSIC_SOLUTION} \
             --service=services/stopwatch:stopwatch_service \
-
-      
+   
