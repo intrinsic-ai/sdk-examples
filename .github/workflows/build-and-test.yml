@@ -33,8 +33,10 @@ jobs:
 
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
 
+
       - name: Update SDK to latest
         run: bazel fetch --repo=@ai_intrinsic_sdks --force
+
 
       - name: Build And Test
         run: bazel test --verbose_failures --test_output=errors --nobuild_tests_only //...
