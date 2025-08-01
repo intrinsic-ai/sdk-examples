@@ -1,0 +1,68 @@
+name: 'Setup Intrinsic Tools'
+description: 'Downloads specific (or latest) inctl and inbuild binaries.'
+
+inputs:
+  version:
+    description: 'The release version tag to download (e.g., "v1.2.3"). Defaults to "latest".'
+    required: false
+    default: 'latest'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download and Setup Tools
+      shell: bash
+      run: |
+        echo "--- Setting up Intrinsic tools ---"
+        mkdir -p bin
+        
+        GH_REPO="intrinsic-ai/sdk"
+        # Access the 'version' input passed to the action.
+        VERSION="${{ inputs.version }}"
+        
+        echo "Downloading version: $VERSION"
+
+        # Construct the correct GitHub API URL based on the version.
+        if [[ "$VERSION" == "latest" ]]; then
+          API_URL="https://api.github.com/repos/$GH_REPO/releases/latest"
+        else
+          API_URL="https://api.github.com/repos/$GH_REPO/releases/tags/$VERSION"
+        fi
+        
+        # Fetch the release JSON once to be more efficient.
+        RELEASE_DATA=$(curl -sL "$API_URL")
+
+        # Check if the release was found and provide a clear error if not.
+        if echo "$RELEASE_DATA" | jq -e '.message == "Not Found"' > /dev/null; then
+          echo "::error::Release '$VERSION' not found in repo '$GH_REPO'."
+          exit 1
+        fi
+        
+        # Map the original asset names to the desired shorter command names.
+        declare -A TOOLS_MAP
+        TOOLS_MAP["inctl-linux-amd64"]="inctl"
+        TOOLS_MAP["inbuild-linux-amd64"]="inbuild"
+
+        for SOURCE_NAME in "${!TOOLS_MAP[@]}"; do
+          TARGET_NAME=${TOOLS_MAP[$SOURCE_NAME]}
+          echo "---"
+          echo "Locating asset: $SOURCE_NAME -> $TARGET_NAME"
+
+          URL=$(echo "$RELEASE_DATA" | jq -r ".assets[] | select(.name == \"$SOURCE_NAME\") | .browser_download_url")
+
+          if [[ -z "$URL" || "$URL" == "null" ]]; then
+            echo "::error::Could not find asset '$SOURCE_NAME' in release '$VERSION'."
+            exit 1
+          fi
+
+          # Download the file and save it with the new, shorter name.
+          echo "Downloading to bin/$TARGET_NAME..."
+          curl -sL -o "bin/$TARGET_NAME" "$URL"
+          chmod +x "bin/$TARGET_NAME"
+          echo "✅ bin/$TARGET_NAME is now available."
+        done
+
+        echo "---"
+        echo "Adding bin directory to PATH"
+        echo "$(pwd)/bin" >> $GITHUB_PATH
+        echo "✅ All tools are installed and ready."
