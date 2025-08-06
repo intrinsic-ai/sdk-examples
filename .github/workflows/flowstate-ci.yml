@@ -16,7 +16,6 @@ on:
         required: false
         default: 'latest'
 
-
 jobs:
   ci:
     runs-on: ubuntu-24.04
@@ -25,11 +24,11 @@ jobs:
       INTRINSIC_SOLUTION: ${{ github.event.inputs.INTRINSIC_SOLUTION }}
       INTRINSIC_API_KEY: ${{ secrets.INTRINSIC_API_KEY }}
       INTRINSIC_TOOL_VERSION: ${{ github.event.inputs.INTRINSIC_TOOL_VERSION }}
-      SKILLS_UNDER_TEST: >-
-        //skills/start_stopwatch
-        //skills/stop_stopwatch
-      SERVICES_UNDER_TEST: >-
-        //services/stopwatch
+      SKILLS_UNDER_TEST: |
+        //skills/start_stopwatch:start_stopwatch_skill
+        //skills/stop_stopwatch:stop_stopwatch_py_skill
+      SERVICES_UNDER_TEST: |
+        //services/stopwatch:stopwatch_service
 
     steps:
       - name: Free Disk Space (Ubuntu)
@@ -66,16 +65,46 @@ jobs:
         with:
           api-key: ${INTRINSIC_API_KEY}
           organization: ${INTRINSIC_ORGANIZATION}
+      
+      - name: Make CI Script Executable
+        run: chmod +x ./tests/run_ci.sh
 
       - name: Prepare Targets
         id: prep_targets
         run: |
-          TARGETS=""
-          for path in ${{ env.SKILLS_UNDER_TEST }}; do
-            TARGETS="${TARGETS} ${path}/..."
-          done
-          for path in ${{ env.SERVICES_UNDER_TEST }}; do
-            TARGETS="${TARGETS} ${path}/..."
-          done
-          echo "Computed Targets: ${TARGETS}"
-          echo "target_list=${TARGETS}" >> "$GITHUB_OUTPUT"
+          SKILLS=""
+          while read -r path; do
+            if [ -n "$path" ]; then
+              if [ -z "$SKILLS" ]; then
+                SKILLS="${path}"
+              else
+                SKILLS="${SKILLS},${path}"
+              fi
+            fi
+          done <<< "${{ env.SKILLS_UNDER_TEST }}"
+          
+          SERVICES=""
+          while read -r path; do
+            if [ -n "$path" ]; then
+              if [ -z "$SERVICES" ]; then
+                SERVICES="${path}"
+              else
+                SERVICES="${SERVICES},${path}"
+              fi
+            fi
+          done <<< "${{ env.SERVICES_UNDER_TEST }}"
+          
+          echo "Computed Skills: ${SKILLS}"
+          echo "Computed Services: ${SERVICES}"
+          echo "skill_list=${SKILLS}" >> "$GITHUB_OUTPUT"
+          echo "service_list=${SERVICES}" >> "$GITHUB_OUTPUT"
+      
+      - name: Run CI Bash Script
+        shell: bash
+        env:
+          PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${{ github.workspace }}/bin
+        run: |
+          . ./tests/run_ci.sh --skill=${{ steps.prep_targets.outputs.skill_list }} \
+            --org=${INTRINSIC_ORGANIZATION} \
+            --solution=${INTRINSIC_SOLUTION} \
+            --service=${{ steps.prep_targets.outputs.service_list }}\   
