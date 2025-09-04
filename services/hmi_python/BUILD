@@ -3,6 +3,7 @@ load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "i
 load("@container_structure_test//:defs.bzl", "container_structure_test")
 load("@rules_oci//oci:defs.bzl", "oci_load")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_python//python:defs.bzl", "py_binary")
 
 filegroup(
     name = "frontend_files",

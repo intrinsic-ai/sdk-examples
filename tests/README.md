@@ -4,33 +4,46 @@ This guide shows how to setup and run the `flowstate-ci.yml` Github action.
 
 ## Overview
 
-This journey guides you into several `inctl` commands in order to go through an end to end test. For testing purposes, it will uses the same [sdk-examples](https://github.com/intrinsic-ai/sdk-examples) repo as the base. In that way it will use the following skills: `//skills/start_stopwatch:start_stopwatch_skill`,`//skills/stop_stopwatch:stop_stopwatch_py_skill` and the service `//services/stopwatch:stopwatch_service`.
+This journey guides you into several `inctl` commands in order to go through an end to end test. 
+To demonstrate an exemplary workflow setup, it will use content of the [sdk-examples](https://github.com/intrinsic-ai/sdk-examples). 
+In that way it will use the following skills: `//skills/start_stopwatch:start_stopwatch_skill`,`//skills/stop_stopwatch:stop_stopwatch_py_skill` and the service `//services/stopwatch:stopwatch_service`.
 
 ## Setup
 
-1. Add the `INTRINSIC_API_KEY` from `inctl auth login` as a secret on Github: Before starting the task, you'll need to add your own `INTRINSIC_API_KEY` as a Github secret. This one expires in 90 days and you can use it during this time while you don't generate a new one. You can follow [this guide](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets#creating-secrets-for-a-repository) in order to create the secret.
+1. Add the `INTRINSIC_API_KEY` from `inctl auth login` as a secret on Github: 
+   Before starting the task, you'll need to add your own `INTRINSIC_API_KEY` as a Github secret. 
+   This one expires in 90 days and you can use it during this time. 
+   Warning: They key will be revoked if you create another API key with the same user by invoking `inctl auth login` again. 
+   You can follow [this guide](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets#creating-secrets-for-a-repository) in order to create the secret in a GitHub environment.
 
-2. Decide in which organization you will test: get your organization between *intrinsic@intrinsic-prod-us*, *intrinsic@intrinsic-dev* or *intrinsic@giza-workcells*.
+2. The CI workflow will execute against a running solution on either a VM or an IPC. 
+   If you don't already have an existing testing solution in your organization, create a new one following [this guide](https://flowstate.intrinsic.ai/docs/guides/build_with_flowstate/create_a_new_solution/). 
+   To configure which solution to test with, you will need the respective solution ID. 
+   To get your solution id, you can either retrieve it from the solution list in the portal (click the 3 dots next to your solution and select *Copy solution ID*).
 
-3. Get your solution id: If you don't have a solution created in your prefered organization where you want to test the workflow, create a new one following [this guide](https://flowstate.intrinsic.ai/docs/guides/build_with_flowstate/create_a_new_solution/). Then, copy the solution ID.
-
-4. Decide which version of Intrinsic tools you will use: by default the version is the *latest*.
+3. The CI workflow will use tooling (e.g. inctl) that is provided through the Intrinsic SDK. 
+   To specify which version of Intrinsic SDK tooling you want to use for the required tools, you have to provide a version tag for the SDK repository. 
+   By default this can be set to *latest*, indicating the latest tagged release. 
+   Alternatively, you can select a specific SDK version by entering its release tag name, e.g. "v1.23.20250825".
 
 ## Running the workflow
 
 > [!NOTE]
 > Before running the action, your solution **must be started** in your desired organization.
 
-The worklow contains one main bash script which is an end-to-end journey for performing continuous integration. This bash goes through the following steps:
+The worklow contains one main bash script which is an end-to-end journey for performing continuous integration. 
+This bash goes through the following steps:
 
-1. Check Intrinsic Organization.
+1. Check Intrinsic Organization. 
 2. Deploy an existing solution.
 3. Build the skill(s).
-4. Install the skill(s).
-5. Build the service(s).
-6. Install the service(s).
-7. Add the service(s).
-8. Add a process that uses the skill and service.
+4. Build the service(s). 
+5. Lease a VM. 
+6. Install the skill(s). 
+7. Install the service(s). 
+8. Add the service(s). 
+9. Add a process that uses the skill and service. 
+10. Return the VM requested.
 
 For running the github action:
 
