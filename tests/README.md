@@ -34,14 +34,16 @@ In that way it will use the following skills: `//skills/start_stopwatch:start_st
 The worklow contains one main bash script which is an end-to-end journey for performing continuous integration. 
 This bash goes through the following steps:
 
-1. Check Intrinsic Organization.
+1. Check Intrinsic Organization. 
 2. Deploy an existing solution.
 3. Build the skill(s).
-4. Install the skill(s).
-5. Build the service(s).
-6. Install the service(s).
-7. Add the service(s).
-8. Add a process that uses the skill and service.
+4. Build the service(s). 
+5. Lease a VM. 
+6. Install the skill(s). 
+7. Install the service(s). 
+8. Add the service(s). 
+9. Add a process that uses the skill and service. 
+10. Return the VM requested.
 
 For running the github action:
 

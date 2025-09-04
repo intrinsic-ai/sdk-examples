@@ -5,6 +5,7 @@ echo "---This bash will go through all the CI journey ---"
 # Variables setup
 
 INTRINSIC_ORGANIZATION=""
+INTRINSIC_VM_DURATION=""
 SKILL_BAZEL=""
 INTRINSIC_SOLUTION=""
 SERVICE_BAZEL=""
@@ -17,6 +18,10 @@ while [[ "$#" -gt 0 ]]; do
         --org=*)
             INTRINSIC_ORGANIZATION="${1#*=}"
             echo "Argument --org received: $INTRINSIC_ORGANIZATION"
+            ;;
+        --vm=*)
+            INTRINSIC_VM_DURATION="${1#*=}"
+            echo "Argument --vm received: $INTRINSIC_VM_DURATION"
             ;;
         --skill=*)
             SKILL_BAZEL="${1#*=}"
@@ -111,7 +116,66 @@ fi
 
 echo ""
 
-echo "4. Install the skill(s)."
+echo "4. Build the service(s)"
+echo "NOTE: You should have a service created in order to build it in this step."
+
+SERVICE_BAZEL=$(echo "$SERVICE_BAZEL" | xargs)
+
+if [ -n "$SERVICE_BAZEL" ]; then
+    SERVICE_TARGETS=$(echo "$SERVICE_BAZEL" | tr ',' ' ')
+    
+    echo "Building all services with the targets: $SERVICE_TARGETS"
+    
+    bazel build $SERVICE_TARGETS
+    
+    if [ $? -ne 0 ]; then
+        echo "Error: Bazel build for service failed. Exiting."
+        exit 1
+    fi
+    echo "Successfully built all services."
+else
+    echo "No services targets were provided. Skipping build step."
+fi
+
+echo ""
+
+echo "5.Lease a VM"
+
+if [ -n "$INTRINSIC_VM_DURATION" ]; then 
+    echo "Requesting VM for $INTRINSIC_VM_DURATION hours..."
+    lease_output=$(inctl vm lease --silent -d "${INTRINSIC_VM_DURATION}h" --org "$INTRINSIC_ORGANIZATION" 2>&1)
+    echo "Lease output $lease_output"
+    lease_status=$? 
+    if [ $lease_status -eq 0 ]; then
+        echo ""
+        echo "VM lease request successful!"
+        extracted_vm_instance=$lease_output
+
+        if [ -n "$extracted_vm_instance" ]; then
+            VM_INSTANCE="$extracted_vm_instance"
+            echo "Auto-captured VM instance ID: $VM_INSTANCE"
+            export VM_INSTANCE 
+        else
+            echo "Warning: Could not auto-capture VM instance ID from command output."
+            echo "Output was: $lease_output"
+            read -p "Please, copy and paste the VM instance ID to return it later: " VM_INSTANCE < /dev/tty
+            if [ -z "$VM_INSTANCE" ]; then
+                echo "Warning: VM instance ID was not provided. You will need to return it manually."
+            fi
+        fi
+    else
+        echo "There was an error leasing the VM."
+        echo "Command output: $lease_output"
+        echo "Please, verify the command and its output."
+    fi
+else
+    echo "VM lease skipped due to missing time duration."
+fi
+
+
+echo ""
+
+echo "6. Install the skill(s)."
 
 INSTALLED_SKILLS=$(inctl skill list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
@@ -144,30 +208,7 @@ done
 
 echo ""
 
-echo "5. Build the service(s)"
-echo "NOTE: You should have a service created in order to build it in this step."
-
-SERVICE_BAZEL=$(echo "$SERVICE_BAZEL" | xargs)
-
-if [ -n "$SERVICE_BAZEL" ]; then
-    SERVICE_TARGETS=$(echo "$SERVICE_BAZEL" | tr ',' ' ')
-    
-    echo "Building all services with the targets: $SERVICE_TARGETS"
-    
-    bazel build $SERVICE_TARGETS
-    
-    if [ $? -ne 0 ]; then
-        echo "Error: Bazel build for service failed. Exiting."
-        exit 1
-    fi
-    echo "Successfully built all services."
-else
-    echo "No services targets were provided. Skipping build step."
-fi
-
-echo ""
-
-echo "6. Install the service(s)."
+echo "7. Install the service(s)."
 
 INSTALLED_SERVICES=$(inctl service list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
@@ -205,9 +246,9 @@ done
 
 echo ""
 
-echo "7. Add the service(s)."
+echo "8. Add the service(s)."
 
-echo "7.1 Listing your installed assets for services"
+echo "8.1 Listing your installed assets for services"
 
 INSTALLED_SERVICES=()
 
@@ -231,7 +272,7 @@ while IFS= read -r full_service_name; do
     done
 done < <(inctl service list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
-echo "7.2 Add the service(s)"
+echo "8.2 Add the service(s)"
 
 if [ ${#INSTALLED_SERVICES[@]} -eq 0 ]; then
     echo "No matching installed services found to add. Skipping this step."
@@ -260,7 +301,7 @@ else
 fi
 
 echo ""
-echo "8. Add a process that uses the skill and service."
+echo "9. Add a process that uses the skill and service."
 
 PYTHON_SCRIPT_PATH="./tests/sbl_ci.py"
 
@@ -282,6 +323,12 @@ else
 fi
 
 echo ""
+
+echo "10. Return your VM"
+
+echo "Returning your VM requested in the first steps."
+
+inctl vm return "$lease_output" --org "$INTRINSIC_ORGANIZATION"
 
 echo "---------------------------"
 echo "CI Journey finished"
