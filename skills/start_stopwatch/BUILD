@@ -1,6 +1,7 @@
 load("@ai_intrinsic_sdks//bazel:skills.bzl", "py_skill", "skill_manifest")
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
 
 proto_library(
     name = "start_stopwatch_proto",

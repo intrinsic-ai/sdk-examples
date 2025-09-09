@@ -2,6 +2,8 @@ load("@ai_intrinsic_sdks//bazel:skills.bzl", "cc_skill", "py_skill", "skill_mani
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_proto_library")
 load("@com_google_protobuf//bazel:cc_proto_library.bzl", "cc_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
 load("@scan_barcodes_pip_deps//:requirements.bzl", "requirement")
 
 proto_library(

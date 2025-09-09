@@ -1,7 +1,8 @@
-# HMI
+# HMI (Go)
 
 This example implements a service-based HMI for Flowstate.
-
+The hmi service is written using Go.
+The frontend uses HTML and JavaScript to create a very simple UI.
 > [!IMPORTANT]
 > This HMI service is based on the ["Create an HMI service"](https://flowstate.intrinsic.ai/docs/assets/create_new_assets/create_services/implement_service_scenarios/create_hmi_service/) guide in the Flowstate documentation.
 > Follows the steps in the guide to install the HMI service in your solution.

@@ -3,6 +3,7 @@ load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "i
 load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_grpc_library", "py_proto_library")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 load("@random_number_pip_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 
 proto_library(
     name = "random_number_proto",
