@@ -1,6 +1,8 @@
-# HMI
+# HMI (Angular-Go)
 
 This example implements a service-based HMI for Flowstate.
+The hmi service is written using Go,
+and the frontend is created using Typescript/Angular.
 
 > [!IMPORTANT]
 > This HMI service is based on the ["Create an HMI service"](https://flowstate.intrinsic.ai/docs/assets/create_new_assets/create_services/implement_service_scenarios/create_hmi_service/) guide in the Flowstate documentation.
@@ -43,7 +45,7 @@ The placeholder `{port}` is the `http_port` from the local runtime context.
 > The value of `--base_url_fmt` must end with a `/`.
 
 > [!NOTE]
-> The value of `--ingress_address` must be accessible for your browser. In other words it needs to know how to translate it to an IP. 
+> The value of `--ingress_address` must be accessible for your browser. In other words it needs to know how to translate it to an IP.
 > If you are running a solution you should be fine using the provided address and no special considerations to take into account.
 > On the other hand just make sure to use an address the browser knows how to translate. If you are running Linux you can easily add a new entry to `/etc/hosts` file mapping whatever value you used as `ingress_address`, for example: `127.0.0.1    workcell.lan`. Alternative you can just use the keyword `localhost` which your system already knows how to translate.
 
@@ -52,21 +54,23 @@ You can now make changes to the HMI implementation and simply re-run the above c
 > [!IMPORTANT]
 > If you made changes to the frontend remember to run `ng build` inside `services/angular-hmi/angular-app/` in order to regenerate the files.
 
-
 ## Install the HMI to a solution
 
 To install the service to a running solution you use `inctl`.
 
 > [!NOTE]
-> Remember to [authenticate with your organization](https://flowstate.intrinsic.ai/docs/guides/build_with_code/connect_to_an_organization/#authenticate-with-your-organization) 
+> Remember to [authenticate with your organization](https://flowstate.intrinsic.ai/docs/guides/build_with_code/connect_to_an_organization/#authenticate-with-your-organization)
 
 1. First build the service
+
 ```sh
 bazel build //services/angular-hmi:hmi_angular_service
 ```
+
 It should generate a `.tar` ready to be deployed, take note of the output location for next step.
 
 2. Now install it in your running solution
+
 ```sh
 inctl service install bazel-bin/services/angular-hmi/hmi_angular_service.bundle.tar --org=ORGANIZATION_NAME --address="workcell.lan:17080"
 ```

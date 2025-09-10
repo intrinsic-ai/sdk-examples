@@ -95,11 +95,11 @@ SKILL_BAZEL=$(echo "$SKILL_BAZEL" | xargs)
 
 if [ -n "$SKILL_BAZEL" ]; then
     SKILL_TARGETS=$(echo "$SKILL_BAZEL" | tr ',' ' ')
-    
+
     echo "Building all skills with the targets: $SKILL_TARGETS"
-    
+
     bazel build $SKILL_TARGETS
-    
+
     if [ $? -ne 0 ]; then
         echo "Error: Bazel build for skills failed. Exiting."
         exit 1
@@ -132,7 +132,7 @@ for SKILL in "${SKILL_ARRAY[@]}"; do
 
         if echo "$INSTALLED_SKILLS" | grep -q "com.example.${skill_name}"; then
             echo "Skill '$skill_name' is already installed. Removing the skill."
-            inctl skill uninstall --type=id "com.example.${skill_name}" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION"
+            inctl asset uninstall "com.example.${skill_name}" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION"
         fi
         echo "Installing skill: $SKILL"
         inctl skill install bazel-bin/"$skill_package"/"$skill_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
@@ -151,11 +151,11 @@ SERVICE_BAZEL=$(echo "$SERVICE_BAZEL" | xargs)
 
 if [ -n "$SERVICE_BAZEL" ]; then
     SERVICE_TARGETS=$(echo "$SERVICE_BAZEL" | tr ',' ' ')
-    
+
     echo "Building all services with the targets: $SERVICE_TARGETS"
-    
+
     bazel build $SERVICE_TARGETS
-    
+
     if [ $? -ne 0 ]; then
         echo "Error: Bazel build for service failed. Exiting."
         exit 1
@@ -169,12 +169,12 @@ echo ""
 
 echo "6. Install the service(s)."
 
-INSTALLED_SERVICES=$(inctl service list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
+INSTALLED_SERVICES=$(inctl asset list --asset_types="service" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
 IFS=',' read -ra SERVICE_ARRAY <<< "$SERVICE_BAZEL"
 
 for SERVICE in "${SERVICE_ARRAY[@]}"; do
-    SERVICE=$(echo "$SERVICE" | xargs) 
+    SERVICE=$(echo "$SERVICE" | xargs)
     if [ -n "$SERVICE" ]; then
         if [[ "$SERVICE" == *:* ]]; then
             service_package="${SERVICE%:*}"
@@ -190,13 +190,13 @@ for SERVICE in "${SERVICE_ARRAY[@]}"; do
         if echo "$INSTALLED_SERVICES" | grep -q "com.example.${service_target}"; then
             echo "Service '$service_target' is already installed. Removing the service."
             inctl service delete "${service_target}" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION"
-            inctl service uninstall "com.example.${service_target}" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION"
+            inctl asset uninstall "com.example.${service_target}" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION"
             echo "Waiting for 20 seconds before installing..."
             sleep 20
         fi
         echo "Installing service: $SERVICE"
         inctl service install bazel-bin/"$service_package"/"$service_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
-        
+
         if [ $? -ne 0 ]; then
             echo "Error: Service installation for '$SERVICE' failed. Exiting."
         fi
@@ -229,7 +229,7 @@ while IFS= read -r full_service_name; do
             break
         fi
     done
-done < <(inctl service list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
+done < <(inctl asset list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
 echo "7.2 Add the service(s)"
 
@@ -238,15 +238,15 @@ if [ ${#INSTALLED_SERVICES[@]} -eq 0 ]; then
 else
     for i in "${!INSTALLED_SERVICES[@]}"; do
         SERVICE_FULL_NAME="${INSTALLED_SERVICES[$i]}"
-        SERVICE_SHORT_NAME="${SERVICES_TARGET[$i]}" 
+        SERVICE_SHORT_NAME="${SERVICES_TARGET[$i]}"
 
         if [ -n "$SERVICE_FULL_NAME" ] && [ -n "$SERVICE_SHORT_NAME" ]; then
             echo "Adding service '$SERVICE_FULL_NAME' with name '$SERVICE_SHORT_NAME' to solution '$INTRINSIC_SOLUTION'..."
             inctl service add "$SERVICE_FULL_NAME" \
                 --org "$INTRINSIC_ORGANIZATION" \
                 --solution "$INTRINSIC_SOLUTION" \
-                --name "${SERVICE_SHORT_NAME}" 
-            
+                --name "${SERVICE_SHORT_NAME}"
+
             if [ $? -eq 0 ]; then
                 echo "Successfully added service: $SERVICE_FULL_NAME"
 
