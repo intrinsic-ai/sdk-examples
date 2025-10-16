@@ -5,6 +5,7 @@ echo "---This bash will go through all the CI journey ---"
 # Variables setup
 
 INTRINSIC_ORGANIZATION=""
+INTRINSIC_VM_DURATION=""
 SKILL_BAZEL=""
 INTRINSIC_SOLUTION=""
 SERVICE_BAZEL=""
@@ -17,6 +18,10 @@ while [[ "$#" -gt 0 ]]; do
         --org=*)
             INTRINSIC_ORGANIZATION="${1#*=}"
             echo "Argument --org received: $INTRINSIC_ORGANIZATION"
+            ;;
+        --vm=*)
+            INTRINSIC_VM_DURATION="${1#*=}"
+            echo "Argument --vm received: $INTRINSIC_VM_DURATION"
             ;;
         --skill=*)
             SKILL_BAZEL="${1#*=}"
@@ -58,37 +63,7 @@ export INTRINSIC_ORGANIZATION ORG
 
 echo ""
 
-echo "2. Deploy an existing solution."
-
-echo "NOTE: You should have your solution running with the corresponding id."
-
-echo "2.1. Checking the solution id."
-
-if [ -z "$INTRINSIC_SOLUTION" ]; then
-    inctl solution list --filter running_in_sim,running_on_hw --org "$INTRINSIC_ORGANIZATION"
-    echo ""
-    read -p "Please, copy the solution id: " INTRINSIC_SOLUTION
-    if [ -z "$INTRINSIC_SOLUTION" ]; then
-        echo "Error! Solution id wasn't set."
-        exit 1
-    else
-        export INTRINSIC_SOLUTION="$INTRINSIC_SOLUTION"
-        echo "Done! The INTRINSIC_SOLUTION has been set to: $INTRINSIC_SOLUTION"
-    fi
-else
-    export INTRINSIC_SOLUTION="$INTRINSIC_SOLUTION"
-    echo "Done! The INTRINSIC_SOLUTION has been set to: $INTRINSIC_SOLUTION"
-fi
-
-echo ""
-
-echo "2.2. Get the solution from the id."
-
-inctl solution get $INTRINSIC_SOLUTION --org "$INTRINSIC_ORGANIZATION"
-
-echo ""
-
-echo "3. Build the skill(s)."
+echo "2. Build the skill(s)."
 echo "NOTE: You should have a skill created in order to build it in this step."
 
 SKILL_BAZEL=$(echo "$SKILL_BAZEL" | xargs)
@@ -111,7 +86,106 @@ fi
 
 echo ""
 
-echo "4. Install the skill(s)."
+echo "3. Build the service(s)"
+echo "NOTE: You should have a service created in order to build it in this step."
+
+SERVICE_BAZEL=$(echo "$SERVICE_BAZEL" | xargs)
+
+if [ -n "$SERVICE_BAZEL" ]; then
+    SERVICE_TARGETS=$(echo "$SERVICE_BAZEL" | tr ',' ' ')
+
+    echo "Building all services with the targets: $SERVICE_TARGETS"
+
+    bazel build $SERVICE_TARGETS
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Bazel build for service failed. Exiting."
+        exit 1
+    fi
+    echo "Successfully built all services."
+else
+    echo "No services targets were provided. Skipping build step."
+fi
+
+echo ""
+
+echo "4.Lease a VM"
+
+if [ -n "$INTRINSIC_VM_DURATION" ]; then 
+    echo "Requesting VM for $INTRINSIC_VM_DURATION hours..."
+    lease_output=$(inctl vm lease --silent -d "${INTRINSIC_VM_DURATION}h" --org "$INTRINSIC_ORGANIZATION" 2>&1)
+    echo "Lease output $lease_output"
+    lease_status=$? 
+    if [ $lease_status -eq 0 ]; then
+        echo ""
+        echo "VM lease request successful!"
+        extracted_vm_instance=$lease_output
+
+        if [ -n "$extracted_vm_instance" ]; then
+            VM_INSTANCE="$extracted_vm_instance"
+            echo "Auto-captured VM instance ID: $VM_INSTANCE"
+            export VM_INSTANCE 
+        else
+            echo "Warning: Could not auto-capture VM instance ID from command output."
+            echo "Output was: $lease_output"
+            read -p "Please, copy and paste the VM instance ID to return it later: " VM_INSTANCE < /dev/tty
+            if [ -z "$VM_INSTANCE" ]; then
+                echo "Warning: VM instance ID was not provided. You will need to return it manually."
+            fi
+        fi
+    else
+        echo "There was an error leasing the VM."
+        echo "Command output: $lease_output"
+        echo "Please, verify the command and its output."
+    fi
+else
+    echo "VM lease skipped due to missing time duration."
+fi
+
+echo ""
+
+echo "5. Deploy an existing solution."
+
+echo "5.1. Starting the solution."
+
+if [ -n "$INTRINSIC_SOLUTION" ]; then
+    echo "Starting solution '$INTRINSIC_SOLUTION'..."
+    inctl solution start "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION" --cluster "$lease_output"
+
+    echo "Waiting for solution to enter a running state."
+
+    timeout_seconds=300 # 5 minutes
+    check_interval_seconds=10 
+    elapsed_seconds=0
+
+    while true; do
+        status_output=$(inctl solution get "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION")
+
+        if echo "$status_output" | grep -q "is running"; then
+            echo "Solution '$INTRINSIC_SOLUTION' is now running."
+            break 
+        fi
+
+        # Check for timeout
+        if [ "$elapsed_seconds" -ge "$timeout_seconds" ]; then
+            echo "Error: Timed out after $timeout_seconds seconds."
+            echo "Last status check output:"
+            echo "$status_output"
+            exit 1
+        fi
+
+        echo "Not ready yet. Retrying in $check_interval_seconds seconds."
+        sleep "$check_interval_seconds"
+        elapsed_seconds=$((elapsed_seconds + check_interval_seconds))
+    done
+else
+    echo "Warning: '$INTRINSIC_SOLUTION' is not set. Skipping start and wait logic."
+    exit 1
+fi
+
+echo ""
+
+echo "6. Install the skill(s)."
 
 INSTALLED_SKILLS=$(inctl skill list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
@@ -144,30 +218,7 @@ done
 
 echo ""
 
-echo "5. Build the service(s)"
-echo "NOTE: You should have a service created in order to build it in this step."
-
-SERVICE_BAZEL=$(echo "$SERVICE_BAZEL" | xargs)
-
-if [ -n "$SERVICE_BAZEL" ]; then
-    SERVICE_TARGETS=$(echo "$SERVICE_BAZEL" | tr ',' ' ')
-
-    echo "Building all services with the targets: $SERVICE_TARGETS"
-
-    bazel build $SERVICE_TARGETS
-
-    if [ $? -ne 0 ]; then
-        echo "Error: Bazel build for service failed. Exiting."
-        exit 1
-    fi
-    echo "Successfully built all services."
-else
-    echo "No services targets were provided. Skipping build step."
-fi
-
-echo ""
-
-echo "6. Install the service(s)."
+echo "7. Install the service(s)."
 
 INSTALLED_SERVICES=$(inctl asset list --asset_types="service" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
@@ -197,6 +248,7 @@ for SERVICE in "${SERVICE_ARRAY[@]}"; do
         echo "Installing service: $SERVICE"
         inctl service install bazel-bin/"$service_package"/"$service_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
 
+
         if [ $? -ne 0 ]; then
             echo "Error: Service installation for '$SERVICE' failed. Exiting."
         fi
@@ -205,9 +257,9 @@ done
 
 echo ""
 
-echo "7. Add the service(s)."
+echo "8. Add the service(s)."
 
-echo "7.1 Listing your installed assets for services"
+echo "8.1 Listing your installed assets for services"
 
 INSTALLED_SERVICES=()
 
@@ -231,7 +283,7 @@ while IFS= read -r full_service_name; do
     done
 done < <(inctl asset list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
 
-echo "7.2 Add the service(s)"
+echo "8.2 Add the service(s)"
 
 if [ ${#INSTALLED_SERVICES[@]} -eq 0 ]; then
     echo "No matching installed services found to add. Skipping this step."
@@ -260,7 +312,7 @@ else
 fi
 
 echo ""
-echo "8. Add a process that uses the skill and service."
+echo "9. Add a process that uses the skill and service."
 
 PYTHON_SCRIPT_PATH="./tests/sbl_ci.py"
 
@@ -282,6 +334,47 @@ else
 fi
 
 echo ""
+
+echo "10. Stopping your solution"
+
+echo "Stopping the solution '$INTRINSIC_SOLUTION' started in the first steps."
+
+inctl solution stop "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION" --cluster "$lease_output"
+
+echo "Waiting for solution to enter a not running state."
+
+timeout_seconds=300 # 5 minutes
+check_interval_seconds=10 
+elapsed_seconds=0
+
+while true; do
+    status_output=$(inctl solution get "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION")
+
+    if echo "$status_output" | grep -q "not running"; then
+        echo "Solution '$INTRINSIC_SOLUTION' is not running."
+        break 
+    fi
+
+    # Check for timeout
+    if [ "$elapsed_seconds" -ge "$timeout_seconds" ]; then
+        echo "Error: Timed out after $timeout_seconds seconds."
+        echo "Last status check output:"
+        echo "$status_output"
+        exit 1
+    fi
+
+    echo "Not stopped yet. Retrying in $check_interval_seconds seconds."
+    sleep "$check_interval_seconds"
+    elapsed_seconds=$((elapsed_seconds + check_interval_seconds))
+done
+
+echo ""
+
+echo "11. Return your VM"
+
+echo "Returning your VM requested in the first steps."
+
+inctl vm return "$lease_output" --org "$INTRINSIC_ORGANIZATION"
 
 echo "---------------------------"
 echo "CI Journey finished"
