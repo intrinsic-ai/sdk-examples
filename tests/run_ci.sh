@@ -113,7 +113,7 @@ echo "4.Lease a VM"
 
 if [ -n "$INTRINSIC_VM_DURATION" ]; then 
     echo "Requesting VM for $INTRINSIC_VM_DURATION hours..."
-    lease_output=$(inctl vm lease --silent -d "${INTRINSIC_VM_DURATION}h" --org "$INTRINSIC_ORGANIZATION" 2>&1)
+    lease_output=$(inctl vm lease --silent -d "${INTRINSIC_VM_DURATION}h" --org "$INTRINSIC_ORGANIZATION")
     echo "Lease output $lease_output"
     lease_status=$? 
     if [ $lease_status -eq 0 ]; then
