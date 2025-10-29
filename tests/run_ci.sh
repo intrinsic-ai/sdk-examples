@@ -178,6 +178,8 @@ if [ -n "$INTRINSIC_SOLUTION" ]; then
         sleep "$check_interval_seconds"
         elapsed_seconds=$((elapsed_seconds + check_interval_seconds))
     done
+    echo "Waiting 3 minutes for the propagation of the solution..."
+    sleep 180
 else
     echo "Warning: '$INTRINSIC_SOLUTION' is not set. Skipping start and wait logic."
     exit 1
@@ -187,7 +189,7 @@ echo ""
 
 echo "6. Install the skill(s)."
 
-INSTALLED_SKILLS=$(inctl skill list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION")
+INSTALLED_SKILLS=$(inctl skill list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION" --filter "sideloaded")
 
 IFS=',' read -ra SKILL_ARRAY <<< "$SKILL_BAZEL"
 
