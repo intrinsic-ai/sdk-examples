@@ -114,7 +114,6 @@ echo "4.Lease a VM"
 if [ -n "$INTRINSIC_VM_DURATION" ]; then 
     echo "Requesting VM for $INTRINSIC_VM_DURATION hours..."
     lease_output=$(inctl vm lease --silent -d "${INTRINSIC_VM_DURATION}h" --org "$INTRINSIC_ORGANIZATION")
-    echo "Lease output $lease_output"
     lease_status=$? 
     if [ $lease_status -eq 0 ]; then
         echo ""
@@ -150,9 +149,7 @@ echo "5.1. Starting the solution."
 
 if [ -n "$INTRINSIC_SOLUTION" ]; then
     echo "Starting solution '$INTRINSIC_SOLUTION'..."
-    inctl solution start "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION" --cluster "$lease_output"
-
-    echo "Waiting for solution to enter a running state."
+    (INTRINSIC_SOLUTION="" inctl solution start "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION" --cluster "$lease_output")
 
     timeout_seconds=300 # 5 minutes
     check_interval_seconds=10 
@@ -189,7 +186,7 @@ echo ""
 
 echo "6. Install the skill(s)."
 
-INSTALLED_SKILLS=$(inctl skill list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION" --filter "sideloaded")
+INSTALLED_SKILLS=$(inctl skill list --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION" --filter "sideloaded" 2>&1)
 
 IFS=',' read -ra SKILL_ARRAY <<< "$SKILL_BAZEL"
 
@@ -214,6 +211,7 @@ for SKILL in "${SKILL_ARRAY[@]}"; do
         inctl skill install bazel-bin/"$skill_package"/"$skill_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
         if [ $? -ne 0 ]; then
             echo "Error: Skill installation for '$SKILL' failed. Exiting."
+            exit 1
         fi
     fi
 done
@@ -235,7 +233,7 @@ for SERVICE in "${SERVICE_ARRAY[@]}"; do
         else
             echo "Warning: No colon found in SERVICE ('$SERVICE'). Assuming it's a target within the current package."
             service_package=""
-            service_target="$SERVICE"
+            service_target="$SERVICE"  
         fi
 
         SERVICES_TARGET+=("$service_target")
@@ -340,8 +338,7 @@ echo ""
 echo "10. Stopping your solution"
 
 echo "Stopping the solution '$INTRINSIC_SOLUTION' started in the first steps."
-
-inctl solution stop "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION" --cluster "$lease_output"
+(INTRINSIC_SOLUTION="" inctl solution stop "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION" --cluster "$lease_output")
 
 echo "Waiting for solution to enter a not running state."
 
