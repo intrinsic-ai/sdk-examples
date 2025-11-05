@@ -19,9 +19,9 @@ while [[ "$#" -gt 0 ]]; do
             INTRINSIC_ORGANIZATION="${1#*=}"
             echo "Argument --org received: $INTRINSIC_ORGANIZATION"
             ;;
-        --vm=*)
+        --vm-duration=*)
             INTRINSIC_VM_DURATION="${1#*=}"
-            echo "Argument --vm received: $INTRINSIC_VM_DURATION"
+            echo "Argument --vm-duration received: $INTRINSIC_VM_DURATION"
             ;;
         --skill=*)
             SKILL_BAZEL="${1#*=}"

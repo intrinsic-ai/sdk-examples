@@ -107,11 +107,9 @@ jobs:
       
       - name: Run CI Bash Script
         shell: bash
-        env:
-          PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${{ github.workspace }}/bin
         run: |
           . ./tests/run_ci.sh --skill=${{ steps.prep_targets.outputs.skill_list }} \
             --org=${INTRINSIC_ORGANIZATION} \
             --solution=${INTRINSIC_SOLUTION} \
-            --vm="${INTRINSIC_VM_DURATION}" \
+            --vm-duration="${INTRINSIC_VM_DURATION}" \
             --service=${{ steps.prep_targets.outputs.service_list }}\   
