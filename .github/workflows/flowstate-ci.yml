@@ -15,6 +15,11 @@ on:
         description: 'Version of Intrinsic tools to use'
         required: false
         default: 'latest'
+      INTRINSIC_VM_DURATION:
+        description: 'Duration time (hours) for request the VM'
+        required: false
+        default: '1'
+        type: string
 
 jobs:
   ci:
@@ -24,6 +29,7 @@ jobs:
       INTRINSIC_SOLUTION: ${{ github.event.inputs.INTRINSIC_SOLUTION }}
       INTRINSIC_API_KEY: ${{ secrets.INTRINSIC_API_KEY }}
       INTRINSIC_TOOL_VERSION: ${{ github.event.inputs.INTRINSIC_TOOL_VERSION }}
+      INTRINSIC_VM_DURATION: ${{ github.event.inputs.INTRINSIC_VM_DURATION }}
       SKILLS_UNDER_TEST: |
         //skills/start_stopwatch:start_stopwatch_skill
         //skills/stop_stopwatch:stop_stopwatch_py_skill
@@ -101,10 +107,9 @@ jobs:
       
       - name: Run CI Bash Script
         shell: bash
-        env:
-          PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${{ github.workspace }}/bin
         run: |
           . ./tests/run_ci.sh --skill=${{ steps.prep_targets.outputs.skill_list }} \
             --org=${INTRINSIC_ORGANIZATION} \
             --solution=${INTRINSIC_SOLUTION} \
+            --vm-duration="${INTRINSIC_VM_DURATION}" \
             --service=${{ steps.prep_targets.outputs.service_list }}\   
