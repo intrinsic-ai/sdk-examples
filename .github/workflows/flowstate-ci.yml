@@ -87,3 +87,14 @@ jobs:
           solution-id: ${{ env.INTRINSIC_SOLUTION }}
           skills: ${{ github.event.inputs.skill-list }}
           services: ${{ github.event.inputs.service-list }}
+      
+      - name: Run SBL Test
+        if: >-
+          github.event.inputs.skill-list == '//skills/start_stopwatch:start_stopwatch_skill,//skills/stop_stopwatch:stop_stopwatch_py_skill' &&
+          github.event.inputs.service-list == '//services/stopwatch:stopwatch_service'
+        
+        uses: ./.github/actions/run-sbl-test
+        with:
+          organization: ${{ env.INTRINSIC_ORGANIZATION }}
+          solution-id: ${{ env.INTRINSIC_SOLUTION }}
+          test-target: '//tests:sbl_ci' 
