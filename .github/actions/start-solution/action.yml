@@ -1,0 +1,19 @@
+name: 'Start Intrinsic Solution'
+description: 'Leases a VM, starts a solution, and registers a post-job hook to clean up.'
+
+inputs:
+  organization:
+    description: 'The Intrinsic organization'
+    required: true
+  solution-id:
+    description: 'The Intrinsic solution ID'
+    required: true
+  vm-duration:
+    description: 'Duration time (hours) for the VM lease'
+    required: false
+    default: '1'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+  post: 'dist/teardown.js'

@@ -80,6 +80,14 @@ jobs:
         with:
           skills: ${{ github.event.inputs.skill-list }}
           services: ${{ github.event.inputs.service-list }}  
+      
+      - name: Provision Solution and Register Teardown
+        uses: ./.github/actions/start-solution
+        with:
+          organization: ${{ env.INTRINSIC_ORGANIZATION }}
+          vm-duration: ${{ github.event.inputs.vm-duration }}
+          solution-id: ${{ env.INTRINSIC_SOLUTION }}
+
       - name: Deploy Assets
         uses: ./.github/actions/deploy-assets
         with:
