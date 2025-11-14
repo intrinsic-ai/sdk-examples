@@ -63,7 +63,7 @@ For running the main github action:
 1. Go to the *Actions* tab on the sdk-examples repo.
 2. On the left panel called *Actions*, click on the **Flowstate CI**
 3. Go to the main panel at the middle and click on the upper right corner *Run workflow*.
-4. When you click *Run workflow* it will display three spaces: Flowstate Solution ID, Flowstate Organization, Version of Intrinsic tools to use, duration time (hours) for request the VM, comma-separated list of skill targets to test, and comma-separated list of service targets to test. Fill every gap with your desired input that you get from the setup.
+4. When you click *Run workflow* it will display six spaces: Flowstate Solution ID, Flowstate Organization, Version of Intrinsic tools to use, Duration time (hours) for request the VM, Comma-separated list of skill targets to test, and Comma-separated list of service targets to test. Fill every gap with your desired input that you get from the setup.
 5. Click on the green button *Run worflow* at the bottom of the options displayed before.
 
 The above steps are shown in the following image:
