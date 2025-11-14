@@ -19,8 +19,8 @@ These can be overridden using the workflow inputs.
    You can follow [this guide](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets#creating-secrets-for-a-repository) in order to create the secret in a GitHub environment.
    This one expires in 90 days and you can use it during this time. 
    
-   > [!WARNING] 
-   > The key will be revoked if you create another API key with the same user by invoking `inctl auth login` again. 
+> [!WARNING] 
+> The key will be revoked if you create another API key with the same user by invoking `inctl auth login` again. 
    
 
 2. The CI workflow will execute against a running solution on either a VM or an IPC. 
