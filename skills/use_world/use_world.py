@@ -3,7 +3,6 @@
 from typing import cast
 
 from absl import logging
-
 from intrinsic.math.python import data_types
 from intrinsic.skills.proto import skill_service_pb2
 from intrinsic.skills.python import proto_utils
@@ -11,7 +10,6 @@ from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 from intrinsic.world.python import object_world_client
 from intrinsic.world.python import object_world_resources
-
 from skills.use_world import use_world_pb2
 
 ROBOT_EQUIPMENT_SLOT: str = "robot"

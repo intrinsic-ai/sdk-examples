@@ -4,18 +4,13 @@ from unittest.mock import patch
 
 import grpc
 from grpc.framework.foundation import logging_pool
-
-from intrinsic.skills.python import skill_interface
 from intrinsic.hardware.gpio.v1.signal_pb2 import SignalValue
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
-from intrinsic.hardware.opcua_equipment import (
-    opcua_equipment_service_pb2_grpc,
-)
+from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2_grpc
 from intrinsic.resources.proto import resource_handle_pb2
-from skills.read_joint_positions_from_opcua_equipment import (
-    read_joint_positions_from_opcua_equipment,
-    read_joint_positions_from_opcua_equipment_pb2,
-)
+from intrinsic.skills.python import skill_interface
+from skills.read_joint_positions_from_opcua_equipment import read_joint_positions_from_opcua_equipment
+from skills.read_joint_positions_from_opcua_equipment import read_joint_positions_from_opcua_equipment_pb2
 
 ReadJointPositionsFromOpcuaEquipment = (
     read_joint_positions_from_opcua_equipment.ReadJointPositionsFromOpcuaEquipment

@@ -5,7 +5,6 @@ from intrinsic.math.python.pose3 import Pose3
 from intrinsic.math.python.quaternion import Quaternion
 from intrinsic.math.python.rotation3 import Rotation3
 from intrinsic.skills.python import skill_interface
-
 from skills.validate_pose.validate_pose import ValidatePose
 from skills.validate_pose.validate_pose_pb2 import ValidatePoseParams
 

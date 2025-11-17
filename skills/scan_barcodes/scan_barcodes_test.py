@@ -14,9 +14,8 @@ except ImportError:
 from intrinsic.perception.python.camera.cameras import Camera
 from intrinsic.perception.python.camera.data_classes import SensorImage
 from intrinsic.skills.python import skill_interface
-
-from skills.scan_barcodes.scan_barcodes import ScanBarcodes
 from skills.scan_barcodes import scan_barcodes_pb2
+from skills.scan_barcodes.scan_barcodes import ScanBarcodes
 
 
 class ScanBarcodesTest(unittest.TestCase):

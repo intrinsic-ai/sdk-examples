@@ -1,6 +1,7 @@
+import argparse
+
 from intrinsic.solutions import behavior_tree as bt
 from intrinsic.solutions import deployments
-import argparse
 
 
 def run_stopwatch_sequence(

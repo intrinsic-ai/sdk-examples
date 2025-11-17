@@ -82,12 +82,12 @@ cc_library(
     hdrs = ["scan_barcodes.h"],
     deps = [
         ":scan_barcodes_cc_proto",
+        "@ai_intrinsic_sdks//intrinsic/connect/cc/grpc:channel",
         "@ai_intrinsic_sdks//intrinsic/perception/proto/v1:camera_config_cc_proto",
         "@ai_intrinsic_sdks//intrinsic/perception/proto/v1:camera_service_cc_grpc",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:equipment_pack",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/skills/cc:skill_utils",
-        "@ai_intrinsic_sdks//intrinsic/util/grpc",
         "@ai_intrinsic_sdks//intrinsic/util/status:status_conversion_grpc",
         "@ai_intrinsic_sdks//intrinsic/util/status:status_macros",
         "@com_google_absl//absl/log",

@@ -1,9 +1,8 @@
 import unittest
-import portpicker
 
 import grpc
 from grpc.framework.foundation import logging_pool
-
+import portpicker
 from services.random_number import random_number
 from services.random_number import random_number_pb2 as rand_num_proto
 from services.random_number import random_number_pb2_grpc as random_num_grpc

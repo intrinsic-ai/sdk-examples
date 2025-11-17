@@ -1,0 +1,7 @@
+schemaVersion: "2.0.0"
+
+fileExistenceTests:
+- name: 'Server binary'
+  path: '/services/platform_http_server/server'
+  shouldExist: true
+  isExecutableBy: 'group'

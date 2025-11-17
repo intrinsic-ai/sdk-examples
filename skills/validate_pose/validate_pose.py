@@ -1,13 +1,10 @@
 """Contains the skill validate_pose."""
 
-import numpy
-
 from absl import logging
-
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 from intrinsic.world.python import object_world_client
-
+import numpy
 from skills.validate_pose import validate_pose_pb2
 
 

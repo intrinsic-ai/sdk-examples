@@ -21,15 +21,13 @@ https://developers.intrinsic.ai/guides/workcell_design/adding_new_hardware?hl=en
 
 from absl import logging
 import grpc
+from intrinsic.hardware.gpio.v1.signal_pb2 import SignalValue
+from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
+from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2_grpc
 from intrinsic.icon.equipment import equipment_utils
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
-from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
-from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2_grpc
-from intrinsic.hardware.gpio.v1.signal_pb2 import SignalValue
-from skills.write_joint_positions_to_opcua_equipment import (
-    write_joint_positions_to_opcua_equipment_pb2,
-)
+from skills.write_joint_positions_to_opcua_equipment import write_joint_positions_to_opcua_equipment_pb2
 
 _EQUIPMENT_SLOT = "opcua_equipment"
 _ROBOT_SLOT = "robot"

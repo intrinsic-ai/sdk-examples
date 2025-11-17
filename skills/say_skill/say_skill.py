@@ -1,7 +1,6 @@
 """Contains the skill say_skill_py."""
 
 from absl import logging
-
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 

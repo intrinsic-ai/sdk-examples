@@ -1,0 +1,6 @@
+# proto-file: google/protobuf/any.proto
+# proto-message: Any
+[type.googleapis.com/platform_http_server.PlatformHttpServerConfig] {
+    data_asset_id: "ai.intrinsic.hello_world"
+
+  }
