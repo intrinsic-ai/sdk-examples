@@ -92,6 +92,7 @@ cc_library(
         "@ai_intrinsic_sdks//intrinsic/skills/proto:equipment_cc_proto",
         "@ai_intrinsic_sdks//intrinsic/util/status:status_macros",
         "@ai_intrinsic_sdks//intrinsic/util/status:status_macros_grpc",
+        "@com_github_grpc_grpc//:grpc++",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/log",
         "@com_google_absl//absl/status",

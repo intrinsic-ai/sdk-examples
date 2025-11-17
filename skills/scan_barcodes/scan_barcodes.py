@@ -3,27 +3,24 @@
 # [START import_typing]
 from typing import List
 
-# [END import_typing]
-
 from absl import logging
-
 # [START import_cv2]
 import cv2
-
-# [END import_cv2]
-# [START import_numpy]
-import numpy as np
-
-# [END import_numpy]
-
 # [START import_cameras]
 from intrinsic.perception.python.camera import cameras
-
 # [END import_cameras]
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
-
+# [END import_cv2]
+# [START import_numpy]
+import numpy as np
 from skills.scan_barcodes import scan_barcodes_pb2
+
+# [END import_typing]
+
+
+# [END import_numpy]
+
 
 # [START camera_slot_constant]
 # Camera slot name; make sure this matches the skill manifest.

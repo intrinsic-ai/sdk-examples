@@ -7,10 +7,8 @@ import time
 
 import grpc
 from intrinsic.resources.proto import runtime_context_pb2
-
 from services.stopwatch import stopwatch_service_pb2 as stopwatch_proto
 from services.stopwatch import stopwatch_service_pb2_grpc as stopwatch_grpc
-
 
 logger = logging.getLogger(__name__)
 

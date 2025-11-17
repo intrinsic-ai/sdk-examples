@@ -10,11 +10,11 @@
 #include "absl/log/log.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "intrinsic/connect/cc/grpc/channel.h"
 #include "intrinsic/perception/proto/v1/camera_config.pb.h"
 #include "intrinsic/perception/proto/v1/camera_service.grpc.pb.h"
 #include "intrinsic/skills/cc/skill_utils.h"
 #include "intrinsic/skills/proto/skill_service.pb.h"
-#include "intrinsic/util/grpc/grpc.h"
 #include "intrinsic/util/status/status_conversion_grpc.h"
 #include "intrinsic/util/status/status_macros.h"
 #include "opencv2/core/mat.hpp"
@@ -26,7 +26,7 @@ using ::com::example::BarcodeType;
 using ::com::example::ScanBarcodesParams;
 using ::com::example::ScanBarcodesResult;
 
-using ::intrinsic::WaitForChannelConnected;
+using ::intrinsic::connect::WaitForChannelConnected;
 using ::intrinsic::skills::EquipmentPack;
 using ::intrinsic::skills::ExecuteContext;
 using ::intrinsic::skills::ExecuteRequest;

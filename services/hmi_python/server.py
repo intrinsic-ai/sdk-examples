@@ -2,15 +2,17 @@
 
 #!/usr/bin/env python3
 
+from http.server import HTTPServer
+from http.server import SimpleHTTPRequestHandler
 import logging
+import pathlib
 import sys
-from intrinsic.resources.proto import runtime_context_pb2
-from intrinsic.executive.proto import executive_service_pb2_grpc
+
 from google.longrunning.operations_pb2 import ListOperationsRequest  # type: ignore
 from google.protobuf import json_format
 import grpc
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-import pathlib
+from intrinsic.executive.proto import executive_service_pb2_grpc
+from intrinsic.resources.proto import runtime_context_pb2
 
 logger = logging.getLogger(__name__)
 

@@ -1,13 +1,11 @@
 import unittest
 
 import grpc
-
 from intrinsic.skills.testing import skill_test_utils as stu
-
-from skills.get_random_number import get_random_number
-from skills.get_random_number import get_random_number_pb2 as get_rand_num_proto
 from services.random_number import random_number_pb2 as rand_num_proto
 from services.random_number import random_number_pb2_grpc as rand_num_grpc
+from skills.get_random_number import get_random_number
+from skills.get_random_number import get_random_number_pb2 as get_rand_num_proto
 
 
 class FakeRandomNumberServicer(rand_num_grpc.RandomNumberServiceServicer):

@@ -5,7 +5,6 @@ from unittest.mock import patch
 from intrinsic.icon.proto.v1 import service_pb2
 from intrinsic.icon.python import icon_api
 from intrinsic.skills.python import skill_interface
-
 from skills.wiggle_joint.wiggle_joint import WiggleJoint
 from skills.wiggle_joint.wiggle_joint_pb2 import WiggleJointParams
 
