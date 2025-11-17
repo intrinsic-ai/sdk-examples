@@ -1,5 +1,5 @@
 flask==3.0.0
-waitress==2.1.2
+waitress==3.0.1
 grpcio==1.65.0
 # The following are dependencies of flask
 blinker==1.7.0
