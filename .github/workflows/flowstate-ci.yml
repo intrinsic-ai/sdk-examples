@@ -2,33 +2,40 @@ name: Flowstate CI
 on: 
   workflow_dispatch:
     inputs:
-      INTRINSIC_SOLUTION:
+      solution-id:
         description: 'Flowstate Solution ID'
         required: true
         type: string
-      INTRINSIC_ORGANIZATION:
+      organization:
         description: 'Flowstate Organization'
         required: true
         default: 'intrinsic@intrinsic-prod-us'
         type: string
-      INTRINSIC_TOOL_VERSION:
+      tool-version:
         description: 'Version of Intrinsic tools to use'
         required: false
         default: 'latest'
+      vm-duration:
+        description: 'Duration time (hours) for request the VM'
+        required: false
+        default: '1'
+        type: string
+      skill-list:
+        description: 'Comma-separated list of skill targets to test'
+        required: false
+        default: '//skills/start_stopwatch:start_stopwatch_skill,//skills/stop_stopwatch:stop_stopwatch_py_skill'
+      service-list:
+        description: 'Comma-separated list of service targets to test'
+        required: false
+        default: '//services/stopwatch:stopwatch_service'
 
 jobs:
   ci:
     runs-on: ubuntu-24.04
     env:
-      INTRINSIC_ORGANIZATION: ${{ github.event.inputs.INTRINSIC_ORGANIZATION }}
-      INTRINSIC_SOLUTION: ${{ github.event.inputs.INTRINSIC_SOLUTION }}
+      INTRINSIC_ORGANIZATION: ${{ github.event.inputs.organization }}
+      INTRINSIC_SOLUTION: ${{ github.event.inputs.solution-id }}
       INTRINSIC_API_KEY: ${{ secrets.INTRINSIC_API_KEY }}
-      INTRINSIC_TOOL_VERSION: ${{ github.event.inputs.INTRINSIC_TOOL_VERSION }}
-      SKILLS_UNDER_TEST: |
-        //skills/start_stopwatch:start_stopwatch_skill
-        //skills/stop_stopwatch:stop_stopwatch_py_skill
-      SERVICES_UNDER_TEST: |
-        //services/stopwatch:stopwatch_service
 
     steps:
       - name: Free Disk Space (Ubuntu)
@@ -42,7 +49,8 @@ jobs:
           docker-images: true
           swap-storage: false
 
-      - uses: bazel-contrib/setup-bazel@4fd964a13a440a8aeb0be47350db2fc640f19ca8  #v0.15.0
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@4fd964a13a440a8aeb0be47350db2fc640f19ca8  #v0.15.0
         with:
          # Avoid downloading Bazel every time.
          bazelisk-cache: true
@@ -53,58 +61,48 @@ jobs:
          # Share repository cache between workflows.
          repository-cache: true
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # v5.0.0
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
 
       - name: Setup Intrinsic Tools
         uses: ./.github/actions/setup-intrinsic-tools
         with:
-          version: ${INTRINSIC_TOOL_VERSION}
+          version: ${{ github.event.inputs.tool-version }}
 
       - name: Authenticate to Intrinsic
         uses: ./.github/actions/auth-intrinsic
         with:
-          api-key: ${INTRINSIC_API_KEY}
-          organization: ${INTRINSIC_ORGANIZATION}
+          api-key: ${{ env.INTRINSIC_API_KEY }}
+          organization: ${{ env.INTRINSIC_ORGANIZATION }}
       
-      - name: Make CI Script Executable
-        run: chmod +x ./tests/run_ci.sh
+      - name: Build Targets
+        uses: ./.github/actions/build-targets 
+        with:
+          skills: ${{ github.event.inputs.skill-list }}
+          services: ${{ github.event.inputs.service-list }}  
+      
+      - name: Provision Solution and Register Teardown
+        uses: ./.github/actions/start-solution
+        with:
+          organization: ${{ env.INTRINSIC_ORGANIZATION }}
+          vm-duration: ${{ github.event.inputs.vm-duration }}
+          solution-id: ${{ env.INTRINSIC_SOLUTION }}
 
-      - name: Prepare Targets
-        id: prep_targets
-        run: |
-          SKILLS=""
-          while read -r path; do
-            if [ -n "$path" ]; then
-              if [ -z "$SKILLS" ]; then
-                SKILLS="${path}"
-              else
-                SKILLS="${SKILLS},${path}"
-              fi
-            fi
-          done <<< "${{ env.SKILLS_UNDER_TEST }}"
-          
-          SERVICES=""
-          while read -r path; do
-            if [ -n "$path" ]; then
-              if [ -z "$SERVICES" ]; then
-                SERVICES="${path}"
-              else
-                SERVICES="${SERVICES},${path}"
-              fi
-            fi
-          done <<< "${{ env.SERVICES_UNDER_TEST }}"
-          
-          echo "Computed Skills: ${SKILLS}"
-          echo "Computed Services: ${SERVICES}"
-          echo "skill_list=${SKILLS}" >> "$GITHUB_OUTPUT"
-          echo "service_list=${SERVICES}" >> "$GITHUB_OUTPUT"
+      - name: Deploy Assets
+        uses: ./.github/actions/deploy-assets
+        with:
+          organization: ${{ env.INTRINSIC_ORGANIZATION }}
+          solution-id: ${{ env.INTRINSIC_SOLUTION }}
+          skills: ${{ github.event.inputs.skill-list }}
+          services: ${{ github.event.inputs.service-list }}
       
-      - name: Run CI Bash Script
-        shell: bash
-        env:
-          PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${{ github.workspace }}/bin
-        run: |
-          . ./tests/run_ci.sh --skill=${{ steps.prep_targets.outputs.skill_list }} \
-            --org=${INTRINSIC_ORGANIZATION} \
-            --solution=${INTRINSIC_SOLUTION} \
-            --service=${{ steps.prep_targets.outputs.service_list }}\   
+      - name: Run SBL Test
+        if: >-
+          github.event.inputs.skill-list == '//skills/start_stopwatch:start_stopwatch_skill,//skills/stop_stopwatch:stop_stopwatch_py_skill' &&
+          github.event.inputs.service-list == '//services/stopwatch:stopwatch_service'
+        
+        uses: ./.github/actions/run-sbl-test
+        with:
+          organization: ${{ env.INTRINSIC_ORGANIZATION }}
+          solution-id: ${{ env.INTRINSIC_SOLUTION }}
+          test-target: '//tests:sbl_ci' 

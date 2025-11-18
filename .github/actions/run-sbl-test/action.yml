@@ -1,0 +1,24 @@
+name: 'Run SBL Test'
+description: 'Runs a Bazel-based SBL test target.'
+
+inputs:
+  organization:
+    description: 'The Intrinsic organization'
+    required: true
+  solution-id:
+    description: 'The Intrinsic solution ID'
+    required: true
+  test-target:
+    description: 'The Bazel target of the test to run'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run SBL Python Test
+      shell: bash
+      run: |
+        echo "Running SBL test: ${{ inputs.test-target }}"
+        bazel run ${{ inputs.test-target }} -- \
+          --org "${{ inputs.organization }}" \
+          --solution-id "${{ inputs.solution-id }}"

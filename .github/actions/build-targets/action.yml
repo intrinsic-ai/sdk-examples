@@ -1,0 +1,49 @@
+name: 'Build Bazel Targets'
+description: 'Builds a list of skill and service targets.'
+
+inputs:
+  skills:
+    description: 'Comma-separated list of skill targets'
+    required: false
+  services:
+    description: 'Comma-separated list of service targets'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare Targets
+      id: prep
+      shell: bash
+      run: |
+        # Combine lists, being careful not to add extra commas
+        ALL_TARGETS=""
+        if [ -n "${{ inputs.skills }}" ]; then
+          ALL_TARGETS="${{ inputs.skills }}"
+        fi
+        
+        if [ -n "${{ inputs.services }}" ]; then
+          if [ -n "$ALL_TARGETS" ]; then
+            ALL_TARGETS="${ALL_TARGETS},${{ inputs.services }}"
+          else
+            ALL_TARGETS="${{ inputs.services }}"
+          fi
+        fi
+
+        # Convert comma-separated list to a space-separated list for bazel
+        if [ -n "$ALL_TARGETS" ]; then
+          echo "build_list=$(echo "$ALL_TARGETS" | tr ',' ' ')" >> $GITHUB_OUTPUT
+        else
+          echo "build_list=" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Build All Targets
+      shell: bash
+      run: |
+        TARGETS_TO_BUILD="${{ steps.prep.outputs.build_list }}"
+        if [ -n "$TARGETS_TO_BUILD" ]; then
+          echo "Building targets: $TARGETS_TO_BUILD"
+          bazel build $TARGETS_TO_BUILD
+        else
+          echo "No skill or service targets were provided. Skipping build."
+        fi
