@@ -1,0 +1,14 @@
+load("@ai_intrinsic_sdks//intrinsic/assets/data/build_defs:data.bzl", "intrinsic_data")
+
+intrinsic_data(
+    name = "hello_world_data_2",
+    data = [
+        "dist/hello_world.css",
+        "dist/hello_world.html",
+        "dist/hello_world.js",
+    ],
+    manifest = "hello_world.textproto",
+    deps = [
+        "@ai_intrinsic_sdks//intrinsic/assets/data/proto/v1:referenced_data_struct_proto",
+    ],
+)
