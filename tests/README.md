@@ -70,7 +70,7 @@ The above steps are shown in the following image:
 
 ![Runing the action: steps](./images/action_steps.png)
 
-If you want to run do a manual test and run it locally, you can use the bash script provided with the following command from the `sdk-examples` directory:
+If you want to run a manual test locally, you can use the bash script provided with the following command from the `sdk-examples` directory:
 
 ```bash
 . ./tests/run_ci.sh --skill=skills/start_stopwatch:start_stopwatch_skill,skills/stop_stopwatch:stop_stopwatch_py_skill --org=intrinsic@intrinsic-prod-us --solution=example_APPLIC --service=services/stopwatch:stopwatch_service
