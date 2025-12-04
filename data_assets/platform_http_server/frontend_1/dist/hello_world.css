@@ -1,0 +1,61 @@
+/* General body styles */
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  text-align: center;
+}
+
+/* Heading styles */
+h1 {
+  color: #1c1e21;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Container for the button */
+div {
+  margin-bottom: 1.5rem;
+}
+
+/* Button styles */
+#load-operation-id {
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button hover effect */
+#load-operation-id:hover {
+  background-color: #166fe5;
+}
+
+/* Paragraph styles for displaying the result */
+p {
+  font-size: 1.1rem;
+  color: #606770;
+}
+
+/* Style for the operation ID itself */
+#operation-id {
+  color: #0d1117;
+  background-color: #e4e6eb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+}

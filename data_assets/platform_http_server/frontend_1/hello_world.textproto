@@ -1,0 +1,41 @@
+# proto-file: intrinsic/assets/data/proto/v1/data_manifest.proto
+# proto-message: DataManifest
+
+metadata {
+  id {
+    package: "ai.intrinsic"
+    name: "hello_world"
+  }
+  display_name: "hello_world"
+  vendor {
+    display_name: "Intrinsic"
+  }
+}
+data {
+  [type.googleapis.com/intrinsic_proto.data.v1.ReferencedDataStruct] {
+    fields {
+      key: "hello_world.html"
+      value {
+        referenced_data_value: {
+          reference: "dist/hello_world.html"
+        }
+      }
+    }
+    fields {
+      key: "hello_world.css"
+      value {
+        referenced_data_value: {
+          reference: "dist/hello_world.css"
+        }
+      }
+    }
+    fields {
+      key: "hello_world.js"
+      value {
+        referenced_data_value: {
+          reference: "dist/hello_world.js"
+        }
+      }
+    }
+  }
+}
