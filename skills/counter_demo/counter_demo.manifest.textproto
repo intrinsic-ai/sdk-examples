@@ -1,0 +1,36 @@
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/skills/proto/skill_manifest.proto
+# proto-message: intrinsic_proto.skill.SkillManifest
+
+id {
+  package: "com.example"
+  name: "counter_demo"
+}
+display_name: "Counter Demo"
+vendor {
+  display_name: "Intrinsic"
+}
+documentation {
+  description: "Interacts with the counter service."
+}
+options {
+  supports_cancellation: false
+  python_config {
+    skill_module: "skills.counter_demo.counter_demo"
+    proto_module: "skills.counter_demo.counter_demo_pb2"
+    create_skill: "skills.counter_demo.counter_demo.CounterDemo"
+  }
+}
+dependencies {
+  required_equipment {
+    key: "counter_service"
+    value {
+      capability_names: "counter.CounterService"
+    }
+  }
+}
+parameter {
+  message_full_name: "com.example.CounterDemoParams"
+  default_value {
+    type_url: "type.googleapis.com/com.example.CounterDemoParams"
+  }
+}

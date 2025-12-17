@@ -1,0 +1,14 @@
+{
+    "name": "intrinsic-flowstate-devcontainer",
+    "image": "ghcr.io/intrinsic-ai/intrinsic-dev-img:1.22.20250804",
+    "runArgs": [
+        "--network=host"
+    ],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "intrinsic.defaultSdkRepository": "https://github.com/intrinsic-ai/sdk.git"
+            }
+        }
+    }
+}

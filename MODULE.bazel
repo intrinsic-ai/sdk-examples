@@ -18,6 +18,7 @@ bazel_dep(name = "googletest", version = "1.17.0.bcr.1", repo_name = "com_google
 bazel_dep(name = "grpc", version = "1.74.1", repo_name = "com_github_grpc_grpc")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "protobuf", version = "32.1", repo_name = "com_google_protobuf")
+bazel_dep(name = "pybind11_abseil", version = "202402.0")
 bazel_dep(name = "rules_go", version = "0.57.0", repo_name = "io_bazel_rules_go")
 bazel_dep(name = "rules_pkg", version = "1.1.0")
 bazel_dep(name = "rules_python", version = "1.6.3")
@@ -116,6 +117,13 @@ pip.parse(
     requirements_lock = "//services/platform_http_server:requirements.txt",
 )
 use_repo(pip, "platform_http_server_pip_deps")
+
+pip.parse(
+    hub_name = "counter_pip_deps",
+    python_version = "3.11",
+    requirements_lock = "//services/counter:requirements.txt",
+)
+use_repo(pip, "counter_pip_deps")
 
 ##########
 # Containers

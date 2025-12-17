@@ -1,0 +1,29 @@
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/assets/services/proto/service_manifest.proto
+# proto-message: intrinsic_proto.services.ServiceManifest
+
+metadata {
+  id {
+    package: "com.example"
+    name: "counter_service"
+  }
+  vendor {
+    display_name: "Intrinsic"
+  }
+  documentation {
+    description: "A service that acts as a counter."
+  }
+  display_name: "Counter Service"
+}
+service_def {
+  service_proto_prefixes: "/counter.CounterService/"
+  real_spec {
+    image {
+      archive_filename: "counter_service_image.tar"
+    }
+  }
+  sim_spec {
+    image {
+      archive_filename: "counter_service_image.tar"
+    }
+  }
+}
