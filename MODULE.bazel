@@ -125,6 +125,13 @@ pip.parse(
 )
 use_repo(pip, "counter_pip_deps")
 
+pip.parse(
+    hub_name = "points_storage_pip_deps",
+    python_version = "3.11",
+    requirements_lock = "//services/points_storage:requirements.txt",
+)
+use_repo(pip, "points_storage_pip_deps")
+
 ##########
 # Containers
 ##########

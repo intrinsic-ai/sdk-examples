@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package points_storage;
+
+message Point {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message StorePointRequest {
+    string name = 1;
+    Point point = 2;
+}
+
+message StorePointResponse {}
+
+message GetPointRequest {
+    string name = 1;
+}
+
+message GetPointResponse {
+    Point point = 1;
+}
+
+message GetAllPointsRequest {}
+
+message GetAllPointsResponseItem {
+    string name = 1;
+    Point point = 2;
+}
+
+message GetAllPointsResponse {
+    repeated GetAllPointsResponseItem items = 1;
+}
+
+message DeleteRequest {
+    string name = 1;
+}
+
+message DeleteResponse {}
+
+
+service PointsStorageService {
+    rpc Store(StorePointRequest) returns (StorePointResponse) {}
+
+    rpc Get(GetPointRequest) returns (GetPointResponse) {}
+
+    rpc GetAll(GetAllPointsRequest) returns (GetAllPointsResponse) {}
+
+    rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+}

@@ -1,0 +1,29 @@
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/assets/services/proto/service_manifest.proto
+# proto-message: intrinsic_proto.services.ServiceManifest
+
+metadata {
+  id {
+    package: "com.example"
+    name: "points_storage_service"
+  }
+  vendor {
+    display_name: "Intrinsic"
+  }
+  documentation {
+    description: "Stores arbitrary 3D coordinates in the key-value storage."
+  }
+  display_name: "Points storage"
+}
+service_def {
+  service_proto_prefixes: "/points_storage.PointsStorageService/"
+  real_spec {
+    image {
+      archive_filename: "points_storage_service_image.tar"
+    }
+  }
+  sim_spec {
+    image {
+      archive_filename: "points_storage_service_image.tar"
+    }
+  }
+}
