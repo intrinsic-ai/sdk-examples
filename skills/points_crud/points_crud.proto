@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package com.example;
+
+message PointsCrudParams {
+    bool create = 1;
+    bool read = 2;
+    bool update = 3;
+    bool delete = 4;
+}
+
+message PointsCrudExecutionLog {
+    repeated string messages = 1;
+}
