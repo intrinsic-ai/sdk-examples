@@ -4,7 +4,7 @@ package configurable_service;
 
 message ConfigurableServiceConfig {
   // Someone's name
-  string  name = 1;
+  string name = 1;
   // A list of food they like to eat
   repeated string food = 2;
   // The number of seconds to wait between printing someone's food.

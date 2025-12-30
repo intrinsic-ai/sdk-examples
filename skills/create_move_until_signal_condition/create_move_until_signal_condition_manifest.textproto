@@ -1,0 +1,31 @@
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/skills/proto/skill_manifest.proto
+# proto-message: intrinsic_proto.skill.SkillManifest
+
+id {
+  package: "com.example"
+  name: "create_move_until_signal_condition"
+}
+display_name: "Create Move Until Signal Condition"
+vendor {
+  display_name: "Intrinsic"
+}
+documentation {
+  description: "Creates a `move_until_signal_condition` based on the inputs."
+}
+options {
+  supports_cancellation: false
+  python_config {
+    skill_module: "skills.create_move_until_signal_condition.create_move_until_signal_condition"
+    proto_module: "skills.create_move_until_signal_condition.create_move_until_signal_condition_pb2"
+    create_skill: "skills.create_move_until_signal_condition.create_move_until_signal_condition.CreateMoveUntilSignalCondition"
+  }
+}
+dependencies {
+# A dependency to a service can be added here.
+}
+parameter {
+  message_full_name: "com.example.CreateMoveUntilSignalParams"
+}
+return_type {
+  message_full_name: "com.example.CreateMoveUntilSignalResult"
+}

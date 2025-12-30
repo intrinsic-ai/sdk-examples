@@ -1,8 +1,8 @@
 #include "skills/say_skill/say_skill.h"
 
-#include <thread>
-
 #include <gtest/gtest.h>
+
+#include <thread>
 
 #include "intrinsic/skills/testing/skill_test_utils.h"
 #include "skills/say_skill/say_skill.pb.h"
@@ -20,11 +20,13 @@ TEST(SaySkillTest, Execute) {
   // Set parameters
   SaySkillParams params;
   params.set_text("hello world");
-  params.set_wait_ms(1);  
+  params.set_wait_ms(1);
 
   auto skill_test_factory = SkillTestFactory();
-  ExecuteRequest execute_request = skill_test_factory.MakeExecuteRequest(params);
-  std::unique_ptr<ExecuteContext> execute_context = skill_test_factory.MakeExecuteContext({});
+  ExecuteRequest execute_request =
+      skill_test_factory.MakeExecuteRequest(params);
+  std::unique_ptr<ExecuteContext> execute_context =
+      skill_test_factory.MakeExecuteContext({});
 
   auto result = skill->Execute(execute_request, *execute_context);
 
@@ -43,15 +45,15 @@ TEST(SaySkillTest, ExecuteCancelled) {
   SkillCancellationManager canceller(absl::Seconds(10));
 
   auto skill_test_factory = SkillTestFactory();
-  ExecuteRequest execute_request = skill_test_factory.MakeExecuteRequest(params);
-  std::unique_ptr<ExecuteContext> execute_context = skill_test_factory.MakeExecuteContext({
-    .canceller = &canceller
-  });
+  ExecuteRequest execute_request =
+      skill_test_factory.MakeExecuteRequest(params);
+  std::unique_ptr<ExecuteContext> execute_context =
+      skill_test_factory.MakeExecuteContext({.canceller = &canceller});
 
-  std::thread cancel_skill([&canceller](){
-      ASSERT_TRUE(canceller.WaitForReady().ok());
-      ASSERT_TRUE(canceller.Cancel().ok());
-    });
+  std::thread cancel_skill([&canceller]() {
+    ASSERT_TRUE(canceller.WaitForReady().ok());
+    ASSERT_TRUE(canceller.Cancel().ok());
+  });
 
   auto result = skill->Execute(execute_request, *execute_context);
   cancel_skill.join();

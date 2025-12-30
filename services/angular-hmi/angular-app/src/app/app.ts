@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { BASE_URL } from './app-config';
-import { Inject } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Component} from '@angular/core';
+import {Inject} from '@angular/core';
+
+import {BASE_URL} from './app-config';
 
 // Output format of SolutionStatus API
 export declare interface SolutionStatus {
@@ -29,44 +30,41 @@ export declare interface Operation {
   selector: 'app-root',
   standalone: true,
   template: `
-    <h1> Hello, welcome to {{title}}! </h1>
-    <h2> Service-based HMI for Flowstate  </h2>
+    <h1>Hello, welcome to {{ title }}!</h1>
+    <h2>Service-based HMI for Flowstate</h2>
 
     <div>
-      <button type="button"
-        id="load-operation-id"
-        (click)="listOperations()"
-      >
+      <button type="button" id="load-operation-id" (click)="listOperations()">
         Load Operation ID
       </button>
       <div class="output">
         @if (operationResponse !== null) {
           @for (opID of operationResponse; track $index) {
-            <p> Operation ID: {{ opID.name }} </p>
+            <p>Operation ID: {{ opID.name }}</p>
           }
-        }  @else {
-          <p> No operations running </p>
+        } @else {
+          <p>No operations running</p>
         }
       </div>
     </div>
 
     <div class="container">
-      <button type="button"
+      <button
+        type="button"
         id="load-operation-id"
         (click)="getSolutionStatus()"
       >
         Load Solution status
       </button>
-      
+
       @if (statusResponse !== null) {
-      <div class="output">
-        <p> Solution name: {{ statusResponse.display_name }} </p>
-        <p> Current status: {{ statusResponse.state }} </p>
-        <p> Cluster id: {{ statusResponse.cluster_name }} </p>
-      </div>
+        <div class="output">
+          <p>Solution name: {{ statusResponse.display_name }}</p>
+          <p>Current status: {{ statusResponse.state }}</p>
+          <p>Cluster id: {{ statusResponse.cluster_name }}</p>
+        </div>
       }
     </div>
-
   `,
   styles: [],
 })
@@ -76,35 +74,36 @@ export class App {
   operationResponse: Operation[] = []; // Object to parse the Executive Service response
   statusResponse: SolutionStatus | null = null; // Object to parse the Solution status response
 
-
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     @Inject(BASE_URL) private readonly urlPrefix: string,
   ) {}
 
   listOperations(): void {
-    const apiURL = window.location.origin + this.urlPrefix + "api/executive/operations"
+    const apiURL =
+      window.location.origin + this.urlPrefix + 'api/executive/operations';
     this.http.get<Operation[]>(apiURL).subscribe(
       (response) => {
         this.operationResponse = response;
       },
       (error) => {
-        console.error("Error while running executive service client")
+        console.error('Error while running executive service client');
         this.operationID = null;
-      }
-    )
+      },
+    );
   }
 
   getSolutionStatus(): void {
-    const apiURL = window.location.origin + this.urlPrefix + "api/solution/status"
+    const apiURL =
+      window.location.origin + this.urlPrefix + 'api/solution/status';
     this.http.get<SolutionStatus>(apiURL).subscribe(
       (response) => {
         this.statusResponse = response;
       },
       (error) => {
-        console.error("Error while running solution status client")
+        console.error('Error while running solution status client');
         this.operationID = null;
-      }
-    )
+      },
+    );
   }
-
 }
