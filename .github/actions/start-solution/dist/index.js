@@ -27317,7 +27317,7 @@ function requireStartSolution () {
 
 	        // Wait and try again
 	        core.info(`Not ready yet. Retrying in ${checkIntervalSeconds} seconds.`);
-	        await sleep(checkIntervalSeconds * 1000); // sleep takes milliseconds
+	        await sleep(checkIntervalSeconds * 1000);
 	    }
 	}
 
@@ -27347,6 +27347,8 @@ function requireStartSolution () {
 	        }
 	        core.info(`VM lease successful! ID: ${vmInstanceId}`);
 
+	        core.setOutput('vm_id', vmInstanceId);
+
 	        // Save the VM ID and org for the cleanup script
 	        core.saveState('vmInstanceId', vmInstanceId);
 	        core.saveState('org', org);
@@ -27362,14 +27364,12 @@ function requireStartSolution () {
 	            }
 	        };
 
-	        // Pass the 'startOptions' as the third argument
 	        await exec.exec(
 	            'inctl',
 	            ['solution', 'start', solutionId, '--org', org, '--cluster', vmInstanceId],
 	            startOptions
 	        );
 
-	        // Wait for it to be ready
 	        await waitForSolutionStart(solutionId, org);
 	        core.info('Waiting 3 minutes for propagation...');
 	        await sleep(180 * 1000);
