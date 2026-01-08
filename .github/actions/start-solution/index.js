@@ -88,6 +88,8 @@ async function run() {
         }
         core.info(`VM lease successful! ID: ${vmInstanceId}`);
 
+        core.setOutput('vm_id', vmInstanceId);
+
         // Save the VM ID and org for the cleanup script
         core.saveState('vmInstanceId', vmInstanceId);
         core.saveState('org', org);

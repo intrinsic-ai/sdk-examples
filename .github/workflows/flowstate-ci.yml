@@ -28,6 +28,11 @@ on:
         description: 'Comma-separated list of service targets to test'
         required: false
         default: '//services/stopwatch:stopwatch_service'
+      asset-prefix:
+        description: 'The namespace prefix for assets (e.g., com.example, ai.intrinsic)'
+        required: false
+        default: 'ai.intrinsic'
+
 
 jobs:
   ci:
@@ -95,6 +100,7 @@ jobs:
           solution-id: ${{ env.INTRINSIC_SOLUTION }}
           skills: ${{ github.event.inputs.skill-list }}
           services: ${{ github.event.inputs.service-list }}
+          asset-prefix: ${{ github.event.inputs.asset-prefix }}
       
       - name: Run SBL Test
         if: >-

@@ -8,6 +8,10 @@ inputs:
   solution-id:
     description: 'The Intrinsic solution ID'
     required: true
+  asset-prefix:
+    description: 'The namespace prefix for assets (e.g., com.example, ai.intrinsic)'
+    required: false
+    default: 'ai.intrinsic'
   skills:
     description: 'Comma-separated list of skill targets'
     required: false
@@ -39,10 +43,12 @@ runs:
           skill_package_dir="${skill_package#//}" # Remove leading //
           skill_name=$(basename "$skill_package_dir")
           skill_target="${SKILL##*:}"
+
+          FULL_SKILL_NAME="${{ inputs.asset-prefix }}.${skill_name}"
           
-          if echo "$INSTALLED_SKILLS" | grep -q "com.example.${skill_name}"; then
-            echo "Skill 'com.example.${skill_name}' is already installed. Removing..."
-            inctl asset uninstall "com.example.${skill_name}" --org "${{ inputs.organization }}" --solution "${{ inputs.solution-id }}"
+          if echo "$INSTALLED_SKILLS" | grep -q "$FULL_SKILL_NAME"; then
+            echo "Skill '$FULL_SKILL_NAME' is already installed. Removing..."
+            inctl asset uninstall "$FULL_SKILL_NAME" --org "${{ inputs.organization }}" --solution "${{ inputs.solution-id }}"
           fi
           
           BUNDLE_PATH="bazel-bin/${skill_package_dir}/${skill_target}.bundle.tar"
@@ -75,11 +81,12 @@ runs:
           service_target="${SERVICE##*:}"
           
           SERVICES_TARGET_NAMES+=("$service_target")
+          FULL_SERVICE_NAME="${{ inputs.asset-prefix }}.${service_target}"
           
-          if echo "$INSTALLED_SERVICES_LIST" | grep -q "com.example.${service_target}"; then
-            echo "Service 'com.example.${service_target}' is already installed. Deleting and uninstalling..."
+          if echo "$INSTALLED_SERVICES_LIST" | grep -q "$FULL_SERVICE_NAME"; then
+            echo "Service '$FULL_SERVICE_NAME'is already installed. Deleting and uninstalling..."
             inctl service delete "${service_target}" --org "${{ inputs.organization }}" --solution "${{ inputs.solution-id }}"
-            inctl asset uninstall "com.example.${service_target}" --org "${{ inputs.organization }}" --solution "${{ inputs.solution-id }}"
+            inctl asset uninstall "$FULL_SERVICE_NAME" --org "${{ inputs.organization }}" --solution "${{ inputs.solution-id }}"
             echo "Waiting for 20 seconds..."
             sleep 20
           fi

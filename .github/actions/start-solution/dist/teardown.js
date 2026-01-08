@@ -27301,7 +27301,7 @@ function requireTeardown () {
 	    // Check for "not running"
 	    if (statusOutput.includes('not running')) {
 	      core.info(`Solution '${solutionId}' is now stopped.`);
-	      return; // Success!
+	      return; 
 	    }
 
 	    elapsedSeconds += checkIntervalSeconds;
@@ -27339,7 +27339,6 @@ function requireTeardown () {
 	      }
 	    };
 
-	    // Pass the 'stopOptions' as the third argument
 	    await exec.exec(
 	      'inctl',
 	      ['solution', 'stop', solutionId, '--org', org, '--cluster', vmInstanceId],

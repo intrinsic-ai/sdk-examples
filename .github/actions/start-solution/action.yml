@@ -13,6 +13,10 @@ inputs:
     required: false
     default: '1'
 
+outputs:
+  vm_id:
+    description: "The ID of the leased VM (Cluster ID)"
+
 runs:
   using: 'node20'
   main: 'dist/index.js'
