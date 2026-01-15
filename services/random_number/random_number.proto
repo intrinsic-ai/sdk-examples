@@ -14,6 +14,5 @@ message RandomNumberResponse {
 
 service RandomNumberService {
   // Get a random number in the range of range_start and range_end.
-  rpc GetRandomNumber(RandomNumberRequest)
-      returns (RandomNumberResponse) {}
+  rpc GetRandomNumber(RandomNumberRequest) returns (RandomNumberResponse) {}
 }

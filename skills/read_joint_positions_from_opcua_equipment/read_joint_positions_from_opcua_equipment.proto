@@ -3,8 +3,7 @@ syntax = "proto3";
 package com.intrinsic;
 import "intrinsic/icon/proto/joint_space.proto";
 
-message ReadJointPositionsFromOpcuaEquipmentParams {
-}
+message ReadJointPositionsFromOpcuaEquipmentParams {}
 
 message ReadJointPositionsFromOpcuaEquipmentResult {
   intrinsic_proto.icon.JointVec joint_positions = 1;

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package com.example;
+
+import "intrinsic/icon/proto/v1/condition_types.proto";
+
+message CreateMoveUntilSignalParams {
+  // The name of the ICON part that is configured with the block name below.
+  // While block names are unique and it is possible to query the ICON config
+  // and extract the part with the block name, this is out of scope for this
+  // example.
+  string icon_part_name = 1;
+  // Specifies the name of the AIO (Analog Input/Output) block from which
+  // values will be read. You can look up the list of block names, indices, and
+  // current values of analog inputs in the Services panel, on the settings
+  // page of the real-time control or robot control service, in the 'I/O
+  // mapping' window.
+  string analog_input_block_name = 2;
+  //  You can look up the order and current values in the
+  // Services panel, on the settings page of the real-time control or robot
+  // control service, in the 'I/O mapping' window.
+  int32 signal_index = 3;
+  // The generated condition "triggers" when the value as greater, or equal to
+  // `upperLimit``.
+  double upperLimit = 4;
+}
+
+message CreateMoveUntilSignalResult {
+  intrinsic_proto.icon.v1.Condition result = 1;
+}
