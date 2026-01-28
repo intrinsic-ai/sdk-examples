@@ -4,12 +4,11 @@ This project demonstrates a browser-based HMI client that connects to the Intrin
 
 ## Architecture
 
-The connection flows through a local proxy to bypass CORS(Cross-Origin Resource Sharing) and reach the Kubernetes cluster securely:
+The connection flows through a local proxy to bypass CORS (Cross-Origin Resource Sharing) and reach the Kubernetes cluster securely:
 
-1.  **Browser (HMI)**: Sends HTTP requests to `/http-gateway/...`
-2.  **Vite Proxy**: Forwards requests from `localhost:5173` → `localhost:17081`.
-3.  **inctl Tunnel**: Securely tunnels requests from `localhost:17081` → **Remote Cluster**.
-4.  **Executive Service**: Receives the command and control the solution.
+1. **Browser (HMI)**: Sends HTTP requests to `localhost:5173/http-gateway/...`
+2. **Vite Proxy**: Intercepts the request, injects the **Authentication Token**, and forwards it securely to `flowstate.intrinsic.ai`.
+3. **Executive Service**: Receives the command inside the remote cluster and controls the solution.
 
 ## Prerequisites
 
@@ -35,24 +34,31 @@ The connection flows through a local proxy to bypass CORS(Cross-Origin Resource 
 
 ## How to Run
 
-### Step 1: Open the Tunnel (Terminal 1)
+This application connects via the secure Flowstate Web Proxy. You must provide your credentials and target URL via environment variables.
 
-You must keep this terminal open to maintain the connection to the solution.
+### Step 1: Get your Configuration
+
+You need a fresh Access Token and the specific URL of your cluster.
+
+1.  **Generate an Access Token:**
+
+    ```bash
+    export TOKEN=$(inctl auth print-access-token --org <YOUR_ORG>)
+    ```
+
+2.  **Set the Target URL:**
+    Replace <ENV> with your name of the org (e.g., intrinsic-prod-us) and <CLUSTER_ID> with your specific cluster name (e.g., vmp-...).
+
+    ```bash
+    export URL="https://flowstate.intrinsic.ai/web-proxy-onprem/<ENV>/<YOUR_CLUSTER_ID>"
+    ```
+
+### Step 2: Start the Web Server
+
+Run the development server with the variables injected:
 
 ```bash
-inctl cluster k8s configure--cluster <YOUR_CLUSTER_NAME> --org <YOUR_ORG>
-```
-
-```bash
-inctl cluster port-forward --cluster <YOUR_CLUSTER_NAME> --org <YOUR_ORG>
-```
-
-### Step 2: Start the Web Server (Terminal 2)
-
-Start the local development server.
-
-```bash
-npm run dev
+HMI_SERVER_URL=$URL HMI_AUTH_TOKEN=$TOKEN npm run dev
 ```
 
 ### Step 3: Run the Test
