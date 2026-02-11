@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package point_storage;
+
+// Represents a point in 3-dimensional space.
+message Point {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+message PutRequest {
+  string name = 1;
+  Point point = 2;
+}
+
+message PutResponse {}
+
+message GetRequest {
+  string name = 1;
+}
+
+message GetResponse {
+  Point point = 1;
+}
+
+message GetAllRequest {}
+
+message NamedPoint {
+  string name = 1;
+  Point point = 2;
+}
+
+message GetAllResponse {
+  repeated NamedPoint items = 1;
+}
+
+message DeleteRequest {
+  string name = 1;
+}
+
+message DeleteResponse {}
+
+service PointStorageService {
+  // Stores the given point.
+  rpc Put(PutRequest) returns (PutResponse) {}
+
+  // Retrieves the point with the given name.
+  // Fails with the NOT_FOUND status if the point doesn't exist.
+  rpc Get(GetRequest) returns (GetResponse) {}
+
+  // Returns all points.
+  rpc GetAll(GetAllRequest) returns (GetAllResponse) {}
+
+  // Deletes the point with the given name.
+  // No-op if the point doesn't exist.
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HMI Verification</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 2rem;
+        background: #f4f4f9;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      button {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:disabled {
+        background: #ccc;
+      }
+      #logs {
+        background: #1e1e1e;
+        color: #00ff00;
+        padding: 15px;
+        height: 350px;
+        overflow-y: auto;
+        margin-top: 20px;
+        white-space: pre-wrap;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>HMI Endpoint Test</h1>
+      <button id="runTestBtn">Run HMI Test Sequence</button>
+      <div id="logs">Ready.</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

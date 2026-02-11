@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build Output
+dist/
+
+# Src generated folder
+src/generated/
+
+# Logs & OS Junk
+*.log
+.DS_Store
+
+# Local Config
+.npmrc

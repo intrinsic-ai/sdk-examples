@@ -2,8 +2,7 @@ syntax = "proto3";
 
 package com.example;
 
-message StopStopwatchParams {
-}
+message StopStopwatchParams {}
 
 message StopStopwatchResult {
   double time_elapsed = 1;

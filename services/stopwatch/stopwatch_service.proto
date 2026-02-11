@@ -2,26 +2,24 @@ syntax = "proto3";
 
 package stopwatch;
 
-message StartRequest {
-}
+message StartRequest {}
 
 message StartResponse {
-    // True if the stopwatch was started.
-    bool success = 1;
-    // A human readable error message if the stopwatch could not be started.
-    string error = 2;
+  // True if the stopwatch was started.
+  bool success = 1;
+  // A human readable error message if the stopwatch could not be started.
+  string error = 2;
 }
 
-message StopRequest {
-}
+message StopRequest {}
 
 message StopResponse {
-    // The time in seconds since the stopwatch was started.
-    double time_elapsed = 1;
-    // True if the stopwatch was stopped.
-    bool success = 2;
-    // A human readable error message if the stopwatch could not be stopped.
-    string error = 3;
+  // The time in seconds since the stopwatch was started.
+  double time_elapsed = 1;
+  // True if the stopwatch was stopped.
+  bool success = 2;
+  // A human readable error message if the stopwatch could not be stopped.
+  string error = 3;
 }
 
 service StopwatchService {

@@ -135,7 +135,7 @@ for SKILL in "${SKILL_ARRAY[@]}"; do
             inctl asset uninstall "com.example.${skill_name}" --org "$INTRINSIC_ORGANIZATION" --solution "$INTRINSIC_SOLUTION"
         fi
         echo "Installing skill: $SKILL"
-        inctl skill install bazel-bin/"$skill_package"/"$skill_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
+        inctl asset install bazel-bin/"$skill_package"/"$skill_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
         if [ $? -ne 0 ]; then
             echo "Error: Skill installation for '$SKILL' failed. Exiting."
         fi
@@ -195,7 +195,7 @@ for SERVICE in "${SERVICE_ARRAY[@]}"; do
             sleep 20
         fi
         echo "Installing service: $SERVICE"
-        inctl service install bazel-bin/"$service_package"/"$service_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
+        inctl asset install bazel-bin/"$service_package"/"$service_target".bundle.tar --solution "$INTRINSIC_SOLUTION" --org "$INTRINSIC_ORGANIZATION"
 
         if [ $? -ne 0 ]; then
             echo "Error: Service installation for '$SERVICE' failed. Exiting."
@@ -210,6 +210,7 @@ echo "7. Add the service(s)."
 echo "7.1 Listing your installed assets for services"
 
 INSTALLED_SERVICES=()
+MATCHED_SERVICES_TARGETS=()
 
 while IFS= read -r full_service_name; do
     full_service_name=$(echo "$full_service_name" | xargs)
@@ -224,6 +225,7 @@ while IFS= read -r full_service_name; do
     for target in "${SERVICES_TARGET[@]}"; do
         if [ "$current_service_target" == "$target" ]; then
             INSTALLED_SERVICES+=("$full_service_name")
+            MATCHED_SERVICES_TARGETS+=("$current_service_target")
             found_match=true
             echo "Matched and added to INSTALLED_SERVICES: $full_service_name (target: $current_service_target)"
             break
@@ -238,7 +240,7 @@ if [ ${#INSTALLED_SERVICES[@]} -eq 0 ]; then
 else
     for i in "${!INSTALLED_SERVICES[@]}"; do
         SERVICE_FULL_NAME="${INSTALLED_SERVICES[$i]}"
-        SERVICE_SHORT_NAME="${SERVICES_TARGET[$i]}"
+        SERVICE_SHORT_NAME="${MATCHED_SERVICES_TARGETS[$i]}"
 
         if [ -n "$SERVICE_FULL_NAME" ] && [ -n "$SERVICE_SHORT_NAME" ]; then
             echo "Adding service '$SERVICE_FULL_NAME' with name '$SERVICE_SHORT_NAME' to solution '$INTRINSIC_SOLUTION'..."

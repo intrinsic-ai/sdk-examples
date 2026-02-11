@@ -14,24 +14,23 @@ namespace skills::stop_stopwatch {
 
 class StopStopwatch : public intrinsic::skills::SkillInterface {
  public:
-
   // Factory method to create an instance of the skill.
   static std::unique_ptr<intrinsic::skills::SkillInterface> CreateSkill();
 
   // Returns the resources required for running this skill.
-  absl::StatusOr<intrinsic_proto::skills::Footprint>
-  GetFootprint(const intrinsic::skills::GetFootprintRequest& request,
-              intrinsic::skills::GetFootprintContext& context) const override;
+  absl::StatusOr<intrinsic_proto::skills::Footprint> GetFootprint(
+      const intrinsic::skills::GetFootprintRequest& request,
+      intrinsic::skills::GetFootprintContext& context) const override;
 
   // Previews the expected outcome of executing the skill.
-  absl::StatusOr<std::unique_ptr<::google::protobuf::Message>>
-  Preview(const intrinsic::skills::PreviewRequest& request,
-          intrinsic::skills::PreviewContext& context) override;
+  absl::StatusOr<std::unique_ptr<::google::protobuf::Message>> Preview(
+      const intrinsic::skills::PreviewRequest& request,
+      intrinsic::skills::PreviewContext& context) override;
 
   // Called once each time the skill is executed in a process.
-  absl::StatusOr<std::unique_ptr<google::protobuf::Message>>
-  Execute(const intrinsic::skills::ExecuteRequest& request,
-          intrinsic::skills::ExecuteContext& context) override;
+  absl::StatusOr<std::unique_ptr<google::protobuf::Message>> Execute(
+      const intrinsic::skills::ExecuteRequest& request,
+      intrinsic::skills::ExecuteContext& context) override;
 };
 
 }  // namespace skills::stop_stopwatch

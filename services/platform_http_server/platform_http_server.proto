@@ -3,6 +3,6 @@ syntax = "proto3";
 package platform_http_server;
 
 message PlatformHttpServerConfig {
-    // Determines which asset to load on startup.
-    string data_asset_id = 1;
+  // Determines which asset to load on startup.
+  string data_asset_id = 1;
 }

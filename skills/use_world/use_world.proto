@@ -17,4 +17,3 @@ message UseWorldParams {
   // Usually this is the right choice if you need "a pose from the world".
   intrinsic_proto.world.TransformNodeReference transform_node_ref = 3;
 }
-

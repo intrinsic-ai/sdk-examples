@@ -13,11 +13,12 @@ from skills.start_stopwatch import start_stopwatch_pb2
 
 
 def make_grpc_stub(resource_handle):
-  logging.info(f"Address: {resource_handle.connection_info.grpc.address}")
+  logging.info("Address: %s", resource_handle.connection_info.grpc.address)
   logging.info(
-      f"Server Instance: {resource_handle.connection_info.grpc.server_instance}"
+      "Server Instance: %s",
+      resource_handle.connection_info.grpc.server_instance,
   )
-  logging.info(f"Header: {resource_handle.connection_info.grpc.header}")
+  logging.info("Header: %s", resource_handle.connection_info.grpc.header)
 
   # Create a gRPC channel without using TLS
   grpc_info = resource_handle.connection_info.grpc
@@ -50,4 +51,4 @@ class StartStopwatch(skill_interface.Skill):
     if response.success:
       logging.info("Successfully started the stopwatch")
     else:
-      logging.error(f"Failed to start the stopwatch: {response.error}")
+      logging.error("Failed to start the stopwatch: %s", response.error)

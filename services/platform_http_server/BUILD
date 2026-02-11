@@ -5,7 +5,7 @@ load("@com_google_protobuf//bazel:py_proto_library.bzl", "py_proto_library")
 load("@container_structure_test//:defs.bzl", "container_structure_test")
 load("@platform_http_server_pip_deps//:requirements.bzl", "requirement")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 
 proto_library(
     name = "platform_http_server_proto",
@@ -18,13 +18,12 @@ py_proto_library(
     deps = [":platform_http_server_proto"],
 )
 
-py_binary(
-    name = "server",
+py_library(
+    name = "server_lib",
     srcs = [
         "data_asset_utils.py",
         "server.py",
     ],
-    main = "server.py",
     deps = [
         ":platform_http_server_py_pb2",
         "@ai_intrinsic_sdks//intrinsic/assets/data/proto/v1:data_asset_py_pb2",
@@ -38,6 +37,24 @@ py_binary(
         requirement("flask"),
         requirement("waitress"),
         requirement("grpcio"),
+    ],
+)
+
+py_binary(
+    name = "server",
+    srcs = ["server.py"],
+    main = "server.py",
+    deps = [
+        ":server_lib",
+    ],
+)
+
+py_test(
+    name = "test_server",
+    srcs = ["test_server.py"],
+    deps = [
+        ":server_lib",
+        requirement("pytest"),
     ],
 )
 
