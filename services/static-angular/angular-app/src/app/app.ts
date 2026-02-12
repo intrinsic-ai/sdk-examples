@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +11,14 @@ import { Component } from '@angular/core';
         text-align: center;
       }
     </style>
-    <h1> Hello, welcome to {{title}}! </h1>
+    <h1>Hello, welcome to {{ title }}!</h1>
     <div class="aligned">
-      <img src="favicon.ico" alt="logo" height="75">
-      <h2> WebService example</h2>
+      <img src="favicon.ico" alt="logo" height="75" />
+      <h2>WebService example</h2>
     </div>
 
     <div class="container">
-      <button type="button" id="placeholder">
-        Your API request here
-      </button>
+      <button type="button" id="placeholder">Your API request here</button>
     </div>
   `,
   styles: [],
@@ -28,5 +26,4 @@ import { Component } from '@angular/core';
 export class App {
   title = 'Flowstate';
   constructor(private http: HttpClient) {}
-
 }

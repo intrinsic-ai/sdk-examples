@@ -43,7 +43,7 @@ The placeholder `{port}` is the `http_port` from the local runtime context.
 > The value of `--base_url_fmt` must end with a `/`.
 
 > [!NOTE]
-> The value of `--ingress_address` must be accessible for your browser. In other words it needs to know how to translate it to an IP. 
+> The value of `--ingress_address` must be accessible for your browser. In other words it needs to know how to translate it to an IP.
 > If you are running a solution you should be fine using the provided address and no special considerations to take into account.
 > On the other hand just make sure to use an address the browser knows how to translate. If you are running Linux you can easily add a new entry to `/etc/hosts` file mapping whatever value you used as `ingress_address`, for example: `127.0.0.1    workcell.lan`. Alternative you can just use the keyword `localhost` which your system already knows how to translate.
 
@@ -52,21 +52,23 @@ You can now make changes to the HMI implementation and simply re-run the above c
 > [!IMPORTANT]
 > If you made changes to the frontend remember to run `ng build` inside `services/static-angular/angular-app/` in order to regenerate the files.
 
-
 ## Install the HMI to a solution
 
 To install the service to a running solution you use `inctl`.
 
 > [!NOTE]
-> Remember to [authenticate with your organization](https://flowstate.intrinsic.ai/docs/guides/build_with_code/connect_to_an_organization/#authenticate-with-your-organization) 
+> Remember to [authenticate with your organization](https://flowstate.intrinsic.ai/docs/guides/build_with_code/connect_to_an_organization/#authenticate-with-your-organization)
 
 1. First build the service
+
 ```sh
 bazel build //services/static-angular:static_angular_service
 ```
+
 It should generate a `.tar` ready to be deployed, take note of the output location for next step.
 
-2. Now install it in your running solution
+1. Now install it in your running solution
+
 ```sh
-inctl service install bazel-bin/services/static-angular/static_angular_service.bundle.tar --org=ORGANIZATION_NAME --address="workcell.lan:17080"
+inctl asset install bazel-bin/services/static-angular/static_angular_service.bundle.tar --org=ORGANIZATION_NAME --address="workcell.lan:17080"
 ```

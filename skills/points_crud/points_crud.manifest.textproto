@@ -1,0 +1,39 @@
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/skills/proto/skill_manifest.proto
+# proto-message: intrinsic_proto.skill.SkillManifest
+
+id {
+  package: "com.example"
+  name: "points_crud"
+}
+display_name: "Points CRUD"
+vendor {
+  display_name: "Intrinsic"
+}
+documentation {
+  description: "Performs CRUD operations on 3d points stored by the point storage service"
+}
+options {
+  supports_cancellation: false
+  python_config {
+    skill_module: "skills.points_crud.points_crud"
+    proto_module: "skills.points_crud.points_crud_pb2"
+    create_skill: "skills.points_crud.points_crud.PointsCrud"
+  }
+}
+dependencies {
+  required_equipment {
+    key: "point_storage_service"
+    value {
+      capability_names: "point_storage.PointStorageService"
+    }
+  }
+}
+parameter {
+  message_full_name: "com.example.PointsCrudParams"
+  default_value {
+    type_url: "type.googleapis.com/com.example.PointsCrudParams"
+  }
+}
+return_type {
+  message_full_name: "com.example.PointsCrudResult"
+}

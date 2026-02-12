@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package com.example;
+
+import "services/point_storage/point_storage_service.proto";
+
+message PutParams {
+  string point_name = 1;
+  point_storage.Point coordinates = 2;
+}
+
+message GetParams {
+  string point_name = 1;
+}
+
+message GetAllParams {}
+
+message UpdateParams {
+  string point_name = 1;
+  point_storage.Point offset = 2;
+}
+
+message DeleteParams {
+  string point_name = 1;
+}
+
+// Parameters of the points CRUD skill.
+message PointsCrudParams {
+  oneof operation {
+    PutParams put = 1;
+    GetParams get = 2;
+    GetAllParams get_all = 3;
+    UpdateParams update = 4;
+    DeleteParams delete = 5;
+  }
+}
+
+message PutResult {
+  point_storage.NamedPoint point = 1;
+}
+
+message GetResult {
+  point_storage.NamedPoint point = 1;
+}
+
+message GetAllResult {
+  repeated point_storage.NamedPoint items = 1;
+}
+
+message UpdateResult {
+  point_storage.NamedPoint updated_point = 1;
+}
+
+message DeleteResult {}
+
+// Return value of the points CRUD skill.
+message PointsCrudResult {
+  oneof result {
+    PutResult put = 1;
+    GetResult get = 2;
+    GetAllResult get_all = 3;
+    UpdateResult update = 4;
+    DeleteResult delete = 5;
+  }
+}

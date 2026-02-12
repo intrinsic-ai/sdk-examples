@@ -26,8 +26,8 @@ bazel build //services/hmi_python:hmi_service
 
 It should generate a `.tar` ready to be deployed, take note of the output location for next step.
 
-2. Now install it in your running solution
+1. Now install it in your running solution
 
 ```sh
-inctl service install bazel-bin/services/hmi_python/hmi_service.bundle.tar --org=ORGANIZATION_NAME --address="workcell.lan:17080"
+inctl asset install bazel-bin/services/hmi_python/hmi_service.bundle.tar --org=ORGANIZATION_NAME --address="workcell.lan:17080"
 ```
