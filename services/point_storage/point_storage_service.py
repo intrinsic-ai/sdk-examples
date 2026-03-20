@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from concurrent.futures import ThreadPoolExecutor
-import logging
+from absl import logging
 import sys
 
 import grpc
@@ -9,8 +9,6 @@ from intrinsic.platform.pubsub.python import pubsub
 from intrinsic.resources.proto import runtime_context_pb2
 from services.point_storage import point_storage_service_pb2 as point_storage_proto
 from services.point_storage import point_storage_service_pb2_grpc as point_storage_grpc
-
-logger = logging.getLogger(__name__)
 
 
 def make_key(point_name: str) -> str:
@@ -151,5 +149,4 @@ def main():
 
 
 if __name__ == "__main__":
-  logging.basicConfig(stream=sys.stderr, level=logging.INFO)
   main()
