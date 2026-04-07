@@ -18,6 +18,7 @@ py_binary(
     deps = [
         "@ai_intrinsic_sdks//intrinsic/executive/proto:executive_service_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/resources/proto:runtime_context_py_pb2",
+        "@com_google_absl_py//absl/logging",
     ],
 )
 

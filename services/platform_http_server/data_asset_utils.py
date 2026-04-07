@@ -1,10 +1,10 @@
-import logging
 from typing import Any
 from typing import Callable
 from typing import List
 from typing import Optional
 from typing import Tuple
 
+from absl import logging
 import grpc
 from intrinsic.assets.data.proto.v1 import data_asset_pb2
 from intrinsic.assets.data.proto.v1 import data_assets_pb2

@@ -1,0 +1,28 @@
+# proto-file: https://github.com/intrinsic-ai/sdk/blob/main/intrinsic/assets/services/proto/service_manifest.proto
+# proto-message: intrinsic_proto.services.ServiceManifest
+
+metadata {
+    id {
+      package: "com.example"
+      name: "configurable_service_cc"
+    }
+    vendor {
+      display_name: "Intrinsic"
+    }
+    documentation {
+      description: "A C++ service that can be configured."
+    }
+    display_name: "Configurable Service C++"
+  }
+  service_def {
+    real_spec {
+      image {
+        archive_filename: "configurable_service_cc_image.tar"
+      }
+    }
+    sim_spec {
+      image {
+        archive_filename: "configurable_service_cc_image.tar"
+      }
+    }
+  }

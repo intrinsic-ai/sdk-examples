@@ -13,8 +13,8 @@ go_binary(
     srcs = ["server.go"],
     data = [":frontend_files"],
     deps = [
-        "@ai_intrinsic_sdks//intrinsic/executive/proto:executive_service_go_grpc_proto",
-        "@ai_intrinsic_sdks//intrinsic/frontend/solution_service/proto:solution_service_go_grpc_proto",
+        "@ai_intrinsic_sdks//intrinsic/executive/proto:executive_service_go_proto",
+        "@ai_intrinsic_sdks//intrinsic/frontend/solution_service/proto:solution_service_go_proto",
         "@ai_intrinsic_sdks//intrinsic/resources/proto:runtime_context_go_proto",
         "@ai_intrinsic_sdks//intrinsic/util/proto:protoio",
         "@com_google_cloud_go_longrunning//autogen/longrunningpb",

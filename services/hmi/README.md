@@ -12,7 +12,7 @@ The frontend uses HTML and JavaScript to create a very simple UI.
 * start a pre-defined process
 * stop execution
 * pause/resume execution
-* view execution status (inluding errors)
+* view execution status (including errors)
 * query and modify the state of service instances in a solution
 
 ## Test locally

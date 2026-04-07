@@ -7,19 +7,16 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "generate": "npx openapi-typescript-codegen --input openapi.yaml --output src/generated --client axios",
+    "generate": "npx @hey-api/openapi-ts --input openapi.yaml --output src/generated",
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.93.1",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "openapi-typescript-codegen": "^0.29.0",
     "prettier": "^3.8.1",
     "prettier-plugin-sort-json": "^4.2.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
-  },
-  "dependencies": {
-    "axios": "^1.13.2",
-    "form-data": "^4.0.5"
   }
 }

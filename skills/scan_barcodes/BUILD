@@ -21,12 +21,11 @@ py_library(
     srcs = ["scan_barcodes.py"],
     deps = [
         ":scan_barcodes_py_pb2",
-        "@ai_intrinsic_sdks//intrinsic/perception/python/camera:cameras",
-        "@ai_intrinsic_sdks//intrinsic/skills/python:proto_utils",
+        "@ai_intrinsic_sdks//intrinsic/perception/client/v1/python:image_utils",
+        "@ai_intrinsic_sdks//intrinsic/perception/client/v1/python/camera:cameras",
         "@ai_intrinsic_sdks//intrinsic/skills/python:skill_interface",
         "@ai_intrinsic_sdks//intrinsic/util:decorators",
         "@com_google_absl_py//absl/logging",
-        "@com_google_protobuf//:protobuf_python",
         requirement("numpy"),
         requirement("opencv-contrib-python-headless"),
         requirement("opencv-python-headless"),
@@ -58,7 +57,14 @@ py_test(
     main = "scan_barcodes_test.py",
     deps = [
         ":scan_barcodes_py",
+        ":scan_barcodes_py_pb2",
+        "@ai_intrinsic_sdks//intrinsic/perception/client/v1/python:image_utils",
+        "@ai_intrinsic_sdks//intrinsic/perception/client/v1/python/camera:cameras",
+        "@ai_intrinsic_sdks//intrinsic/perception/client/v1/python/camera:data_classes",
+        "@ai_intrinsic_sdks//intrinsic/skills/python:skill_interface",
         "@rules_python//python/runfiles",
+        requirement("numpy"),
+        requirement("opencv-python-headless"),
     ],
 )
 

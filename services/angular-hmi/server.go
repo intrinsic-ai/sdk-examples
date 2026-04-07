@@ -14,8 +14,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	esvcgrpcpb "intrinsic/executive/proto/executive_service_go_grpc_proto"
-	ssvcgrpcpb "intrinsic/frontend/solution_service/proto/solution_service_go_grpc_proto"
+	esvcgrpcpb "intrinsic/executive/proto/executive_service_go_proto"
+	ssvcgrpcpb "intrinsic/frontend/solution_service/proto/solution_service_go_proto"
 
 	lropb "cloud.google.com/go/longrunning/autogen/longrunningpb"
 	"github.com/bazelbuild/rules_go/go/tools/bazel"

@@ -7,7 +7,8 @@ from absl import logging
 # [START import_cv2]
 import cv2
 # [START import_cameras]
-from intrinsic.perception.python.camera import cameras
+from intrinsic.perception.client.v1.python.camera import cameras
+from intrinsic.perception.client.v1.python.image_utils import Metadata
 # [END import_cameras]
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
@@ -73,9 +74,19 @@ class ScanBarcodes(skill_interface.Skill):
     # [END access_equipment]
 
     # [START call_capture]
-    # Capture from the camera and get the first sensor image as a numpy array.
-    sensor_image = camera.capture()
-    img = sensor_image.array
+    # Capture from the camera and get the first intensity sensor image as a
+    # numpy array.
+    capture_result = camera.capture()
+    intensity_images = (
+        s.array
+        for s in capture_result.sensor_images.values()
+        if s.array.dtype.metadata is not None
+        and s.array.dtype.metadata.get(Metadata.Keys.PIXEL_TYPE)
+        == Metadata.Values.PIXEL_INTENSITY
+    )
+    img = next(intensity_images, None)
+    if img is None:
+      return scan_barcodes_pb2.ScanBarcodesResult()
     # [END call_capture]
 
     # [START run_detector]

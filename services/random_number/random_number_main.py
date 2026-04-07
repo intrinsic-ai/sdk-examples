@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from concurrent import futures
-import logging
 import sys
 
+from absl import logging
 import grpc
 from intrinsic.assets.services.proto.v1 import service_state_pb2_grpc as state_grpc
 from intrinsic.resources.proto import runtime_context_pb2

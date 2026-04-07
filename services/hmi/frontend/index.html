@@ -28,6 +28,16 @@
       <div id="service-states" class="content"></div>
     </div>
     <div style="display: none" class="notification" id="state-result"></div>
+    <div class="box" style="margin-top: 32px">
+      <button class="button" id="update-status-btn" style="margin-bottom: 16px">
+        Get update status
+      </button>
+      <div id="update-status" class="content"></div>
+      <button disabled class="button" id="approve-update-btn" style="margin-bottom: 16px">
+        Approve update
+      </button>
+    </div>
+    <button class="button" id="reboot">Reboot IPC</button>
   </div>
 </section>
 
@@ -36,6 +46,7 @@
   let behaviorTreeName = "";
   let showStatus = false;
   let states = [];
+  let currentUpdateInfo;
 
   const startEl = document.getElementById("start");
   const stopEl = document.getElementById("stop");
@@ -44,6 +55,11 @@
   const btListEl = document.getElementById("bt-list");
   const serviceStatesEl = document.getElementById("service-states");
   const listStatesEl = document.getElementById("states-list");
+  const updateStatusBtnEl = document.getElementById("update-status-btn");
+  const updateStatusEl = document.getElementById("update-status");
+  const approveUpdateBtnEl = document.getElementById("approve-update-btn");
+  const rebootEl = document.getElementById("reboot");
+
   refreshStatus();
 
   btListEl.addEventListener("mousedown", async () => {
@@ -73,6 +89,24 @@
 
   listStatesEl.addEventListener("click", async () => {
     states = await listServiceStates();
+  });
+
+  updateStatusBtnEl.addEventListener("click", async () => {
+    currentUpdateInfo = await getUpdateStatus();
+    updateStatusEl.innerHTML = formatUpdateInfo(currentUpdateInfo);
+    if (currentUpdateInfo?.state === "STATE_UPDATE_AVAILABLE" && currentUpdateInfo?.available) {
+      approveUpdateBtnEl.disabled = false;
+    } else {
+      approveUpdateBtnEl.disabled = true;
+    }
+  });
+
+  approveUpdateBtnEl.addEventListener("click", async () => {
+    await approveUpdate();
+  });
+
+  rebootEl.addEventListener("click", async () => {
+    await reboot();
   });
 
   async function refreshStatus() {
@@ -249,5 +283,63 @@
       console.log("Starting failed:", e);
     }
     showStatus = true;
+  }
+
+  async function getUpdateStatus() {
+    try {
+      const res = await fetch("../../../http-gateway/ipcUpdater/v1/updateInfo");
+      return await res.json();
+    } catch (e) {
+      console.log("Failed to get update info:", e);
+    }
+    return "";
+  }
+
+  async function approveUpdate() {
+    try {
+      const req = new Request("../../../http-gateway/ipcUpdater/v1/updateInfo:approve", {
+        method: "POST",
+        body: JSON.stringify({ approved: currentUpdateInfo?.available }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      await fetch(req);
+    } catch (e) {
+      console.log("Approving update failed:", e);
+    }
+  }
+
+  async function reboot() {
+    try {
+      const req = new Request("../../../http-gateway/cluster/v1/cluster:reboot", {
+        method: "POST",
+      });
+      await fetch(req);
+    } catch (e) {
+      console.log("Reboot failed:", e);
+    }
+  }
+
+  function formatUpdateInfo(info) {
+    if (!info) return "<p>No data</p>";
+
+    let html = `<p><strong>State:</strong> ${info.state || "N/A"}</p>`;
+
+    if (info.current) {
+      html += `<p><strong>Current Version:</strong> ${info.current.versionId || "N/A"}</p>`;
+      if (info.current.updateNotes) {
+        html += `<p><strong>Notes:</strong> ${info.current.updateNotes}</p>`;
+      }
+    }
+
+    if (info.available) {
+      html += `<p><strong>Available Version:</strong> ${info.available.versionId || "N/A"}</p>`;
+      if (info.available.updateNotes) {
+        html += `<p><strong>Notes:</strong> ${info.available.updateNotes}</p>`;
+      }
+    }
+
+    return html;
   }
 </script>
