@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from concurrent.futures import ThreadPoolExecutor
-import logging
 import sys
 
+from absl import logging
 import grpc
 from intrinsic.platform.pubsub.python import pubsub
 from intrinsic.resources.proto import runtime_context_pb2

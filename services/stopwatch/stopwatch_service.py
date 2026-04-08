@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from concurrent.futures import ThreadPoolExecutor
-import logging
 import sys
 import time
 
+from absl import logging
 import grpc
 from intrinsic.resources.proto import runtime_context_pb2
 from services.stopwatch import stopwatch_service_pb2 as stopwatch_proto

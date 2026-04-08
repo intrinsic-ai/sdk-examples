@@ -107,7 +107,7 @@ Note that the asset name (e.g., `ai.intrinsic.hello_world`) remains the same, bu
   ```
 
   ```bash
-  inctl data install bazel-bin/data_assets/platform_http_server/frontend_1/hello_world_data.bundle.tar  --solution YOUR_SOLUTION_ID
+  inctl asset install bazel-bin/data_assets/platform_http_server/frontend_1/hello_world_data.bundle.tar  --solution YOUR_SOLUTION_ID
   ```
 
 #### Step 3: Enable the service

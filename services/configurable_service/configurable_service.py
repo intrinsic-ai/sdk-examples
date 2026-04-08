@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import logging
 import random
 import sys
 import time
 
+from absl import logging
 from intrinsic.resources.proto import runtime_context_pb2
 from services.configurable_service import configurable_service_pb2
 

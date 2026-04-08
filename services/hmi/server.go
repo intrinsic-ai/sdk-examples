@@ -13,12 +13,12 @@ import (
 	"net/http"
 	"strings"
 
-	sssgrpcpb "intrinsic/assets/services/proto/v1/system_service_state_go_grpc_proto"
+	sssgrpcpb "intrinsic/assets/services/proto/v1/system_service_state_go_proto"
 	btpb "intrinsic/executive/proto/behavior_tree_go_proto"
 	eempb "intrinsic/executive/proto/executive_execution_mode_go_proto"
-	esvcgrpcpb "intrinsic/executive/proto/executive_service_go_grpc_proto"
+	esvcgrpcpb "intrinsic/executive/proto/executive_service_go_proto"
 	rmpb "intrinsic/executive/proto/run_metadata_go_proto"
-	ssvcgrpcpb "intrinsic/frontend/solution_service/proto/solution_service_go_grpc_proto"
+	ssvcgrpcpb "intrinsic/frontend/solution_service/proto/solution_service_go_proto"
 	rcpb "intrinsic/resources/proto/runtime_context_go_proto"
 
 	lropb "cloud.google.com/go/longrunning/autogen/longrunningpb"

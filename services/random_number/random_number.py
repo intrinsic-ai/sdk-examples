@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import datetime
-import logging
 import random
 
+from absl import logging
 from google.protobuf import timestamp_pb2 as timestamp_proto
 import grpc
 from intrinsic.assets.services.proto.v1 import service_state_pb2 as state_proto
@@ -11,8 +11,6 @@ from intrinsic.util.grpc import error_handling
 from intrinsic.util.status import extended_status_pb2 as ext_status_proto
 from services.random_number import random_number_pb2 as random_num_proto
 from services.random_number import random_number_pb2_grpc as random_num_grpc
-
-logger = logging.getLogger(__name__)
 
 NUM_REQUESTS_BEFORE_ERROR = 2
 

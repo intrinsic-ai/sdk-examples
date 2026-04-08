@@ -1,10 +1,18 @@
 import {
-  ExecutiveServiceService,
-  OpenAPI,
-  SolutionServiceService,
+  IntrinsicProtoExecutiveBehaviorTree,
+  executiveServiceCreateOperation,
+  executiveServiceDeleteOperation,
+  executiveServiceGetOperation,
+  executiveServiceListOperations,
+  executiveServiceStartOperation,
+  solutionServiceGetBehaviorTree,
+  solutionServiceListBehaviorTrees,
 } from './generated';
+import {client} from './generated/client.gen';
 
-OpenAPI.BASE = '/http-gateway';
+client.setConfig({
+  baseUrl: '/http-gateway',
+});
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -20,23 +28,26 @@ function log(msg: string) {
 async function forceCleanup() {
   log('Attempting cleanup');
 
-  const opsResp =
-    await ExecutiveServiceService.executiveServiceListOperations();
-  const ops = (opsResp as {operations?: unknown[]})?.operations || [];
+  const operationsResponse = await executiveServiceListOperations();
+  const operations = operationsResponse.data?.operations ?? [];
 
-  if (ops.length === 0) {
+  if (operations.length === 0) {
     log('System is clean.');
     return;
   }
 
-  for (const opRaw of ops) {
-    const op = opRaw as {name: string};
-    const id = op.name.split('/').pop();
+  for (const op of operations) {
+    const id = op.name?.split('/').pop();
+
+    if (!id || !op.name) return;
+
     log(`Deleting: ${id}`);
     let deleted = false;
     for (let i = 0; i < 3; i++) {
       try {
-        await ExecutiveServiceService.executiveServiceDeleteOperation(op.name);
+        await executiveServiceDeleteOperation({
+          path: {name: op.name},
+        });
         deleted = true;
         log(`Deleted successfully.`);
         break;
@@ -70,20 +81,27 @@ async function runTestSequence() {
     }
 
     log('\n2. Checking for Existing Behavior Trees.');
-    let treeToRun: Record<string, unknown> | null = null;
+    let treeToRun: IntrinsicProtoExecutiveBehaviorTree | null = null;
     let mode = 'FALLBACK';
 
     try {
-      const list =
-        await SolutionServiceService.solutionServiceListBehaviorTrees();
-      const trees =
-        (list as {behaviorTrees?: Array<{name: string}>}).behaviorTrees || [];
+      const listResponse = await solutionServiceListBehaviorTrees();
+      const list = listResponse.data;
+      const trees = list?.behaviorTrees ?? [];
+
       if (trees.length > 0) {
         const name = trees[0].name;
+        if (!name) return;
+
         log(`Found ${trees.length} tree(s).`);
         log(`Target: "${name}"`);
-        const dl =
-          await SolutionServiceService.solutionServiceGetBehaviorTree(name);
+
+        const behaviorTreeResponse = await solutionServiceGetBehaviorTree({
+          path: {name},
+        });
+
+        const dl = behaviorTreeResponse.data;
+
         if (dl) {
           treeToRun = dl;
           mode = 'REAL_TREE';
@@ -106,26 +124,28 @@ async function runTestSequence() {
     }
 
     log(`\n3. Creating Operation (Mode: ${mode})`);
-    const create =
-      await ExecutiveServiceService.executiveServiceCreateOperation({
-        behaviorTree: treeToRun as unknown as Parameters<
-          typeof ExecutiveServiceService.executiveServiceCreateOperation
-        >[0]['behaviorTree'],
-      });
-    const opName = (create as {name: string}).name;
+    const createOperation = await executiveServiceCreateOperation({
+      body: {behaviorTree: treeToRun},
+    });
+
+    const opName = createOperation.data?.name;
+    if (!opName) return;
+
     log(`Operation Created!`);
     log(`Created ID: ...${opName.split('/').pop()?.substring(0, 8)}`);
 
     log('\n4. Starting Execution.');
-    await ExecutiveServiceService.executiveServiceStartOperation(opName, {});
+    await executiveServiceStartOperation({
+      path: {name: opName},
+      body: {},
+    });
     log(`Command Sent successfully!`);
 
     log('\n5. Checking status.');
-    const final =
-      await ExecutiveServiceService.executiveServiceGetOperation(opName);
-    log(
-      `State: ${(final as {metadata?: {operationState?: string}}).metadata?.operationState}`,
-    );
+    const final = await executiveServiceGetOperation({
+      path: {name: opName},
+    });
+    log(`State: ${final.data?.metadata?.operationState}`);
 
     log(`TEST COMPLETED: (${mode})`);
   } catch (e) {

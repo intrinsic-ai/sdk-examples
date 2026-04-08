@@ -12,13 +12,13 @@ This server also implements the gRPC ServiceState servicer, allowing its lifecyc
 
 from concurrent import futures
 import json
-import logging
 import mimetypes
 import os
 import pathlib
 import sys
 import threading
 
+from absl import logging
 from flask import Flask
 from flask import jsonify
 from flask import request

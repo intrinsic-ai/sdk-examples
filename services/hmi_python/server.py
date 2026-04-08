@@ -4,10 +4,10 @@
 
 from http.server import HTTPServer
 from http.server import SimpleHTTPRequestHandler
-import logging
 import pathlib
 import sys
 
+from absl import logging
 from google.longrunning.operations_pb2 import ListOperationsRequest  # type: ignore
 from google.protobuf import json_format
 import grpc

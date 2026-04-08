@@ -47,6 +47,7 @@ py_binary(
         ":random_number_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/assets/services/proto/v1:service_state_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/resources/proto:runtime_context_py_pb2",
+        "@com_google_absl_py//absl/logging",
         requirement("grpcio"),
     ],
 )
@@ -76,6 +77,7 @@ py_test(
         ":random_number",
         ":random_number_py_pb2",
         ":random_number_py_pb2_grpc",
+        "@com_google_absl_py//absl/logging",
         requirement("grpcio"),
         requirement("portpicker"),
     ],

@@ -34,6 +34,7 @@ py_library(
         "@ai_intrinsic_sdks//intrinsic/assets/services/proto/v1:service_state_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/executive/proto:executive_service_py_pb2_grpc",
         "@ai_intrinsic_sdks//intrinsic/resources/proto:runtime_context_py_pb2",
+        "@com_google_absl_py//absl/logging",
         requirement("flask"),
         requirement("waitress"),
         requirement("grpcio"),
@@ -46,6 +47,7 @@ py_binary(
     main = "server.py",
     deps = [
         ":server_lib",
+        "@com_google_absl_py//absl/logging",
     ],
 )
 

@@ -11,8 +11,10 @@ except ImportError:
   # https://github.com/bazelbuild/rules_python/issues/1679
   from python.runfiles import runfiles
 
-from intrinsic.perception.python.camera.cameras import Camera
-from intrinsic.perception.python.camera.data_classes import SensorImage
+from intrinsic.perception.client.v1.python.camera.cameras import Camera
+from intrinsic.perception.client.v1.python.camera.data_classes import CaptureResult
+from intrinsic.perception.client.v1.python.camera.data_classes import SensorImage
+from intrinsic.perception.client.v1.python.image_utils import Metadata
 from intrinsic.skills.python import skill_interface
 from skills.scan_barcodes import scan_barcodes_pb2
 from skills.scan_barcodes.scan_barcodes import ScanBarcodes
@@ -36,7 +38,7 @@ class ScanBarcodesTest(unittest.TestCase):
 
   def setUp(self) -> None:
     self.camera_creator_patcher = patch(
-        "intrinsic.perception.python.camera.cameras.Camera",
+        "intrinsic.perception.client.v1.python.camera.cameras.Camera",
         spec_set=True,
         autospec=True,
     )
@@ -57,16 +59,25 @@ class ScanBarcodesTest(unittest.TestCase):
 
     mock_context = self.make_execute_context()
 
+    capture_result = create_autospec(
+        spec=CaptureResult, spec_set=True, instance=True
+    )
     black_buffer = np.ndarray(
         shape=(1216, 1936, 3),
-        dtype=np.uint8,
+        dtype=np.dtype(
+            np.uint8,
+            metadata={
+                Metadata.Keys.PIXEL_TYPE: Metadata.Values.PIXEL_INTENSITY
+            },
+        ),
         buffer=bytes([0] * (1216 * 1936 * 3)),
     )
     black_image = create_autospec(
         spec=SensorImage, spec_set=True, instance=True
     )
     black_image.array = black_buffer
-    self.mock_camera.capture.return_value = black_image
+    capture_result.sensor_images = {"name": black_image}
+    self.mock_camera.capture.return_value = capture_result
 
     result = dut_skill.execute(mock_request, mock_context)
     self.assertTrue(isinstance(result, scan_barcodes_pb2.ScanBarcodesResult))
@@ -80,9 +91,21 @@ class ScanBarcodesTest(unittest.TestCase):
 
     mock_context = self.make_execute_context()
 
+    capture_result = create_autospec(
+        spec=CaptureResult, spec_set=True, instance=True
+    )
     test_image = create_autospec(spec=SensorImage, spec_set=True, instance=True)
-    test_image.array = self.load_test_image("EAN-8_0123456.png")
-    self.mock_camera.capture.return_value = test_image
+    array = self.load_test_image("EAN-8_0123456.png")
+    test_image.array = array.astype(
+        np.dtype(
+            array.dtype,
+            metadata={
+                Metadata.Keys.PIXEL_TYPE: Metadata.Values.PIXEL_INTENSITY
+            },
+        )
+    )
+    capture_result.sensor_images = {"name": test_image}
+    self.mock_camera.capture.return_value = capture_result
 
     result = dut_skill.execute(mock_request, mock_context)
     self.assertTrue(isinstance(result, scan_barcodes_pb2.ScanBarcodesResult))
