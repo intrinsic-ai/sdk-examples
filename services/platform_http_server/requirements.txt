@@ -1,7 +1,7 @@
 flask==3.0.0
 waitress==3.0.1
 grpcio==1.65.0
-pytest==8.0.2
+pytest==9.0.3
 # The following are dependencies of flask
 blinker==1.7.0
 click==8.1.7
