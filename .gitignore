@@ -5,4 +5,3 @@ bazel-**
 compile_commands.json
 MODULE.bazel.lock
 .env
-package-lock.json

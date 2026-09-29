@@ -16,7 +16,9 @@ metadata {
 }
 service_def {
   http_config: {}
-  supports_service_state: true
+  service_state_config {
+    service_versions: INTRINSIC_PROTO_SERVICES_V1_SERVICE_STATE
+  }
   real_spec {
     image {
       archive_filename: "platform_http_server_image.tar"

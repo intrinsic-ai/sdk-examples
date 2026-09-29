@@ -1,10 +1,11 @@
 import unittest
 from unittest.mock import create_autospec
 
-from intrinsic.icon.python import icon_api
-from intrinsic.skills.python import skill_interface
 from skills.create_move_until_signal_condition import create_move_until_signal_condition
 from skills.create_move_until_signal_condition import create_move_until_signal_condition_pb2
+
+from intrinsic.icon.python import icon_api
+from intrinsic.skills.python import skill_interface
 
 
 class CreateMoveUntilSignalConditionTest(unittest.TestCase):

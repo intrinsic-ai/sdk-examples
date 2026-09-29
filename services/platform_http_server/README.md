@@ -80,7 +80,7 @@ Once installed, the service will be running and ready to serve content.
   1. On your browser, paste the desired url. It should follow this format:
 
   ```bash
-  https://flowstate.intrinsic.ai/content/projects/<PROJECT>/uis/onprem/clusters/<CLUSTER>/api/resourceinstances/<SERVICE_NAME>/
+  https://<CLUSTER>.intrinsic.equipment/org/<ORG>@<PROJECT>/api/resourceinstances/<SERVICE_NAME>/
   ```
 
 ## Updating the platform http server content
@@ -159,7 +159,7 @@ curl -X POST http://<hmi-service-address>:<port>/reconfigure \
      -d '{"data_asset_id": "ai.intrinsic.hello_world_2"}'
 ```
 
-Then, manually refresh the page of your localhost and the one from the flowstate, e.g: `https://flowstate.intrinsic.ai/content/projects/giza-workcells/uis/onprem/clusters/vmp-0123-abc4d56e/api/resourceinstances/hmi/` and the server will immediately switch to serving the new content without reinstalling.
+Then, manually refresh the page of your localhost and the one from the flowstate, e.g: `https://vmp-0123-abc4d56e.intrinsic.equipment/org/intrinsic@giza-workcells/api/resourceinstances/hmi/` and the server will immediately switch to serving the new content without reinstalling.
 
 
 ## Running the test locally

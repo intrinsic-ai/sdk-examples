@@ -11,13 +11,14 @@ except ImportError:
   # https://github.com/bazelbuild/rules_python/issues/1679
   from python.runfiles import runfiles
 
+from skills.scan_barcodes import scan_barcodes_pb2
+from skills.scan_barcodes.scan_barcodes import ScanBarcodes
+
 from intrinsic.perception.client.v1.python.camera.cameras import Camera
 from intrinsic.perception.client.v1.python.camera.data_classes import CaptureResult
 from intrinsic.perception.client.v1.python.camera.data_classes import SensorImage
 from intrinsic.perception.client.v1.python.image_utils import Metadata
 from intrinsic.skills.python import skill_interface
-from skills.scan_barcodes import scan_barcodes_pb2
-from skills.scan_barcodes.scan_barcodes import ScanBarcodes
 
 
 class ScanBarcodesTest(unittest.TestCase):

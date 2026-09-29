@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import create_autospec
 
-from intrinsic.skills.python import skill_interface
 from skills.use_world.use_world import UseWorld
 from skills.use_world.use_world_pb2 import UseWorldParams
+
+from intrinsic.skills.python import skill_interface
 
 
 class UseWorldTest(unittest.TestCase):

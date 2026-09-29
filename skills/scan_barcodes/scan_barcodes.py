@@ -6,16 +6,17 @@ from typing import List
 from absl import logging
 # [START import_cv2]
 import cv2
+# [END import_cv2]
+# [START import_numpy]
+import numpy as np
+from skills.scan_barcodes import scan_barcodes_pb2
+
 # [START import_cameras]
 from intrinsic.perception.client.v1.python.camera import cameras
 from intrinsic.perception.client.v1.python.image_utils import Metadata
 # [END import_cameras]
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
-# [END import_cv2]
-# [START import_numpy]
-import numpy as np
-from skills.scan_barcodes import scan_barcodes_pb2
 
 # [END import_typing]
 

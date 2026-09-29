@@ -5,10 +5,9 @@ common --enable_workspace=false
 # Disable empty glob check
 common --incompatible_disallow_empty_glob=false
 
-# Custom downloader configs. This makes it so that external URLs to download dependencies from
+# Custom downloader config. This makes it so that external URLs to download dependencies from
 # can be rewritten at build time and, for example, support custom mirrors.
-common               --downloader_config=bazel/content_mirror/permissive.cfg
-common:strict_mirror --downloader_config=bazel/content_mirror/strict.cfg
+common --downloader_config=bazel/content_mirror/permissive.cfg
 
 # Static linking to workaround OpenCV symbol lookup errors: https://github.com/bazelbuild/rules_foreign_cc/issues/1164
 common --dynamic_mode=off
@@ -41,12 +40,6 @@ common --output_filter='^//((?!(external):).)*$'
 # Set a higher timeout value, just in case.
 common --remote_timeout=3600
 
-# BUG: https://github.com/bazelbuild/bazel/issues/20886
-# Without this flag, our rules_foreign_cc/cmake builds fail with
-# "The associated file is either missing or is an invalid symlink."
-# on Bazel 7 or later as the default was flipped in Bazel 7.
-common --noincompatible_sandbox_hermetic_tmp
-
 # Ensure that you don't accidentally make non-hermetic actions/tests
 # which depend on remote services.
 common --sandbox_default_allow_network=false
@@ -56,3 +49,6 @@ common --sandbox_default_allow_network=false
 #
 # See https://github.com/google/googletest/issues/2883#issuecomment-647540343
 common --define absl=1
+
+# Opt out of 3P telemetry tracking.
+common --repo_env=DO_NOT_TRACK=1

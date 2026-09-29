@@ -10,6 +10,8 @@ from absl import flags
 from absl import logging
 from google.protobuf import timestamp_pb2
 import grpc
+from scripts.recordings import recording_lib
+
 from intrinsic.kubernetes.vmpool.manager.api.v1 import lease_api_pb2
 from intrinsic.kubernetes.vmpool.manager.api.v1 import lease_api_pb2_grpc
 from intrinsic.logging.proto import bag_packager_service_pb2_grpc
@@ -17,7 +19,6 @@ from intrinsic.logging.proto import replay_service_pb2
 from intrinsic.logging.proto import replay_service_pb2_grpc
 from intrinsic.util.grpc import auth
 from intrinsic.util.grpc import dialerutil
-from scripts.recordings import recording_lib
 
 FLAGS = flags.FLAGS
 
@@ -126,7 +127,7 @@ def main(argv):
 
   # Get, or generate the recording and wait for it to complete.
   initial_response = recording_lib.get_recording(
-      bag_packager_client, recording_id, with_url=False
+      bag_packager_client, recording_id, with_signed_url=False
   )
   if initial_response is None:
     logging.error("Recording with id %s does not exist.", recording_id)

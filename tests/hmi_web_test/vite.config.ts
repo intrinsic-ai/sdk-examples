@@ -23,7 +23,7 @@ export default defineConfig(({mode}) => {
   return {
     server: {
       proxy: {
-        '/http-gateway': {
+        '/api/http-gateway': {
           target: TARGET_URL,
           changeOrigin: true,
           secure: true, // Required for https
