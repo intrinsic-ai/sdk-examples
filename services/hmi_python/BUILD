@@ -1,6 +1,6 @@
+load("@ai_intrinsic_sdks//bazel:container_structure_test.bzl", "container_structure_test")
 load("@ai_intrinsic_sdks//bazel:python_oci_image.bzl", "python_oci_image")
 load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "intrinsic_service")
-load("@container_structure_test//:defs.bzl", "container_structure_test")
 load("@rules_oci//oci:defs.bzl", "oci_load")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary")
@@ -58,8 +58,7 @@ filegroup(
 container_structure_test(
     name = "hmi_tarball_test",
     configs = ["testdata/image_files.yaml"],
-    driver = "tar",
-    image = ":hmi_tarball.tar",
+    image = ":hmi_image",
 )
 
 intrinsic_service(

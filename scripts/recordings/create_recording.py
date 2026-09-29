@@ -6,6 +6,7 @@ from absl import flags
 from absl import logging
 from google.protobuf import empty_pb2
 from google.protobuf import timestamp_pb2
+
 from intrinsic.logging.proto import bag_metadata_pb2
 from intrinsic.logging.proto import logger_service_pb2
 from intrinsic.logging.proto import logger_service_pb2_grpc

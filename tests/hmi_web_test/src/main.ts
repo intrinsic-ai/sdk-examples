@@ -11,7 +11,7 @@ import {
 import {client} from './generated/client.gen';
 
 client.setConfig({
-  baseUrl: '/http-gateway',
+  baseUrl: 'api/http-gateway',
 });
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));

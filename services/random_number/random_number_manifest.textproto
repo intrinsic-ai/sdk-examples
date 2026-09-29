@@ -15,7 +15,9 @@ metadata {
   display_name: "Random Number Service"
 }
 service_def {
-  supports_service_state: true
+  service_state_config {
+    service_versions: INTRINSIC_PROTO_SERVICES_V1_SERVICE_STATE
+  }
   service_proto_prefixes: "/com.example.RandomNumberService/"
   real_spec {
     image {

@@ -1,10 +1,11 @@
 """Example skill that creates an icon_api.Condition to be linked to a move_robot skill."""
 
 from absl import logging
+from skills.create_move_until_signal_condition import create_move_until_signal_condition_pb2
+
 from intrinsic.icon.python import icon_api
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
-from skills.create_move_until_signal_condition import create_move_until_signal_condition_pb2
 
 
 class CreateMoveUntilSignalCondition(skill_interface.Skill):

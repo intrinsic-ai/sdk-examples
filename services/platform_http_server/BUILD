@@ -1,8 +1,8 @@
+load("@ai_intrinsic_sdks//bazel:container_structure_test.bzl", "container_structure_test")
 load("@ai_intrinsic_sdks//bazel:python_oci_image.bzl", "python_oci_image")
 load("@ai_intrinsic_sdks//intrinsic/assets/services/build_defs:services.bzl", "intrinsic_service")
 load("@com_google_protobuf//bazel:proto_library.bzl", "proto_library")
 load("@com_google_protobuf//bazel:py_proto_library.bzl", "py_proto_library")
-load("@container_structure_test//:defs.bzl", "container_structure_test")
 load("@platform_http_server_pip_deps//:requirements.bzl", "requirement")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
@@ -87,8 +87,7 @@ python_oci_image(
 container_structure_test(
     name = "platform_http_server_image_test",
     configs = ["testdata/image_files.yaml"],
-    driver = "tar",
-    image = ":platform_http_server_image.tar",
+    image = ":platform_http_server_image",
 )
 
 intrinsic_service(
@@ -100,5 +99,6 @@ intrinsic_service(
     manifest = ":platform_http_server_manifest.textproto",
     deps = [
         ":platform_http_server_proto",
+        "@ai_intrinsic_sdks//intrinsic/assets/services/proto/v1:service_state_proto",
     ],
 )

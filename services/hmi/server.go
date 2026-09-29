@@ -7,11 +7,12 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
-	"intrinsic/util/proto/protoio"
 	"io"
 	"log"
 	"net/http"
 	"strings"
+
+	"intrinsic/util/proto/protoio"
 
 	sssgrpcpb "intrinsic/assets/services/proto/v1/system_service_state_go_proto"
 	btpb "intrinsic/executive/proto/behavior_tree_go_proto"

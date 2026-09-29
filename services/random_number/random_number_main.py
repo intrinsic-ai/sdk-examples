@@ -4,10 +4,11 @@ import sys
 
 from absl import logging
 import grpc
-from intrinsic.assets.services.proto.v1 import service_state_pb2_grpc as state_grpc
-from intrinsic.resources.proto import runtime_context_pb2
 from services.random_number import random_number
 from services.random_number import random_number_pb2_grpc as random_num_grpc
+
+from intrinsic.assets.services.proto.v1 import service_state_pb2_grpc as state_grpc
+from intrinsic.resources.proto import runtime_context_pb2
 
 
 def _get_runtime_context():

@@ -24,14 +24,15 @@ from flask import jsonify
 from flask import request
 from flask import Response
 import grpc
+from services.platform_http_server import data_asset_utils
+from services.platform_http_server import platform_http_server_pb2
+from waitress import serve
+
 from intrinsic.assets.data.proto.v1 import referenced_data_struct_pb2
 # Intrinsic-specific imports
 from intrinsic.assets.services.proto.v1 import service_state_pb2 as state_proto
 from intrinsic.assets.services.proto.v1 import service_state_pb2_grpc as state_grpc
 from intrinsic.resources.proto import runtime_context_pb2
-from services.platform_http_server import data_asset_utils
-from services.platform_http_server import platform_http_server_pb2
-from waitress import serve
 
 app = Flask(__name__)
 update_lock = threading.Lock()
@@ -306,9 +307,4 @@ def main():
 
 
 if __name__ == "__main__":
-  logging.basicConfig(
-      stream=sys.stderr,
-      level=logging.INFO,
-      format="%(asctime)s - %(levelname)s - %(message)s",
-  )
   main()

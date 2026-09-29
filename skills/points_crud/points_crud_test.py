@@ -3,12 +3,13 @@ from typing import List
 import unittest
 
 import grpc
-from intrinsic.skills.testing import skill_test_utils as stu
-from intrinsic.solutions.testing import compare
 from services.point_storage import point_storage_service_pb2 as point_storage_proto
 from services.point_storage import point_storage_service_pb2_grpc as point_storage_grpc
 from skills.points_crud import points_crud
 from skills.points_crud import points_crud_pb2
+
+from intrinsic.skills.testing import skill_test_utils as stu
+from intrinsic.solutions.testing import compare
 
 _POINT_A = point_storage_proto.Point(x=1.0, y=2.0, z=3.0)
 _POINT_B = point_storage_proto.Point(x=10.0, y=20.0, z=30.0)

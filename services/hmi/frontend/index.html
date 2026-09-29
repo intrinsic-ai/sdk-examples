@@ -287,7 +287,7 @@
 
   async function getUpdateStatus() {
     try {
-      const res = await fetch("../../../http-gateway/ipcUpdater/v1/updateInfo");
+      const res = await fetch("../../../api/http-gateway/ipcUpdater/v1/updateInfo");
       return await res.json();
     } catch (e) {
       console.log("Failed to get update info:", e);
@@ -297,7 +297,7 @@
 
   async function approveUpdate() {
     try {
-      const req = new Request("../../../http-gateway/ipcUpdater/v1/updateInfo:approve", {
+      const req = new Request("../../../api/http-gateway/ipcUpdater/v1/updateInfo:approve", {
         method: "POST",
         body: JSON.stringify({ approved: currentUpdateInfo?.available }),
         headers: {
@@ -312,7 +312,7 @@
 
   async function reboot() {
     try {
-      const req = new Request("../../../http-gateway/cluster/v1/cluster:reboot", {
+      const req = new Request("../../../api/http-gateway/cluster/v1/cluster:reboot", {
         method: "POST",
       });
       await fetch(req);

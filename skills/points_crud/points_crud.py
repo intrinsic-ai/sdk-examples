@@ -2,13 +2,14 @@
 
 from absl import logging
 import grpc
+from services.point_storage import point_storage_service_pb2 as point_storage_proto
+from services.point_storage import point_storage_service_pb2_grpc as point_storage_grpc
+from skills.points_crud import points_crud_pb2
+
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 from intrinsic.util.grpc import connection
 from intrinsic.util.grpc import interceptor
-from services.point_storage import point_storage_service_pb2 as point_storage_proto
-from services.point_storage import point_storage_service_pb2_grpc as point_storage_grpc
-from skills.points_crud import points_crud_pb2
 
 
 def make_grpc_stub(resource_handle):

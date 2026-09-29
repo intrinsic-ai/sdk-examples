@@ -1,6 +1,6 @@
 flask==3.0.0
 waitress==3.0.1
-grpcio==1.65.0
+grpcio==1.74.0
 pytest==8.0.2
 # The following are dependencies of flask
 blinker==1.7.0

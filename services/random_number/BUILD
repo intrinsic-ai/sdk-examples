@@ -65,6 +65,7 @@ intrinsic_service(
     manifest = "random_number_manifest.textproto",
     deps = [
         ":random_number_proto",
+        "@ai_intrinsic_sdks//intrinsic/assets/services/proto/v1:service_state_proto",
     ],
 )
 

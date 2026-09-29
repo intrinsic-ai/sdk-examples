@@ -5,6 +5,7 @@ from typing import Optional
 
 from absl import logging
 import grpc
+
 from intrinsic.logging.proto import bag_packager_service_pb2
 from intrinsic.logging.proto import bag_packager_service_pb2_grpc
 from intrinsic.util.grpc import auth
@@ -16,13 +17,13 @@ _GENERATE_RETRY_DELAY_SECS = 30
 def get_recording(
     client: bag_packager_service_pb2_grpc.BagPackagerStub,
     recording_id: str,
-    with_url: bool,
+    with_signed_url: bool,
 ) -> Optional[bag_packager_service_pb2.GetBagResponse]:
   """Retrieves recording details, handling NOT_FOUND errors."""
   try:
     return client.GetBag(
         bag_packager_service_pb2.GetBagRequest(
-            bag_id=recording_id, with_url=with_url
+            bag_id=recording_id, with_signed_url=with_signed_url
         )
     )
   except grpc.RpcError as e:
@@ -50,7 +51,7 @@ def wait_for_recording_to_generate(
   for _ in range(_GENERATE_RETRY_COUNT):
     logging.info("Still generating...")
     # Poll without requesting the URL to be efficient.
-    get_resp = get_recording(stub, recording_id, with_url=False)
+    get_resp = get_recording(stub, recording_id, with_signed_url=False)
     if is_recording_generated(get_resp):
       logging.info("Generated recording file for recording ID %s", recording_id)
       return
@@ -81,6 +82,6 @@ def generate_recording(
       raise RuntimeError(f"Error generating bag: {e}") from e
 
     wait_for_recording_to_generate(stub, recording_id)
-    response = get_recording(stub, recording_id, with_url=False)
+    response = get_recording(stub, recording_id, with_signed_url=False)
 
     return response.bag if response else None
