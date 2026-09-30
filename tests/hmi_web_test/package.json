@@ -11,7 +11,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.93.1",
+    "@hey-api/openapi-ts": "^0.97.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "openapi-typescript-codegen": "^0.29.0",
     "prettier": "^3.8.1",
