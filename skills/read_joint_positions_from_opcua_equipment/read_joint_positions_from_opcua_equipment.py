@@ -14,18 +14,19 @@ file. This configuration must be uploaded to the equipment via Flowstate
 before the skill can communicate with the equipment properly.
 
 For more information about configuring OPCUA equipment, refer to
-https://developers.intrinsic.ai/guides/workcell_design/adding_new_hardware?hl=en#opcua-equipment.
+https://flowstate.intrinsic.ai/docs/guides/build_with_flowstate/build_a_solution/create_a_workcell/add_assets/configure_hardware/configure_OPC_UA_equipment/.
 
 """
 
 from absl import logging
 import grpc
+from skills.read_joint_positions_from_opcua_equipment import read_joint_positions_from_opcua_equipment_pb2
+
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2_grpc
 from intrinsic.icon.proto import joint_space_pb2
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
-from skills.read_joint_positions_from_opcua_equipment import read_joint_positions_from_opcua_equipment_pb2
 
 _EQUIPMENT_SLOT = "opcua_equipment"
 

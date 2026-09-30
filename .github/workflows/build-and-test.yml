@@ -37,4 +37,7 @@ jobs:
 
 
       - name: Build And Test
-        run: bazel test --verbose_failures --test_output=errors --nobuild_tests_only //...
+        run: |
+          # https://github.com/bazel-contrib/rules_kotlin/issues/1352
+          unset -v ANDROID_HOME ANDROID_SDK_HOME
+          bazel test --verbose_failures --test_output=errors --nobuild_tests_only //...

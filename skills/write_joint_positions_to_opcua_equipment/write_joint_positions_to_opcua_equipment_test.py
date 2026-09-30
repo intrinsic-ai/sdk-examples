@@ -4,14 +4,15 @@ from unittest.mock import patch
 
 import grpc
 from grpc.framework.foundation import logging_pool
+from skills.write_joint_positions_to_opcua_equipment import write_joint_positions_to_opcua_equipment
+from skills.write_joint_positions_to_opcua_equipment import write_joint_positions_to_opcua_equipment_pb2
+
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2
 from intrinsic.hardware.opcua_equipment import opcua_equipment_service_pb2_grpc
 from intrinsic.icon.proto.v1 import service_pb2
 from intrinsic.icon.python import icon_api
 from intrinsic.resources.proto import resource_handle_pb2
 from intrinsic.skills.python import skill_interface
-from skills.write_joint_positions_to_opcua_equipment import write_joint_positions_to_opcua_equipment
-from skills.write_joint_positions_to_opcua_equipment import write_joint_positions_to_opcua_equipment_pb2
 
 WriteJointPositionsToOpcuaEquipment = (
     write_joint_positions_to_opcua_equipment.WriteJointPositionsToOpcuaEquipment

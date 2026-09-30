@@ -1,4 +1,6 @@
 from absl import logging
+from skills.wiggle_joint import wiggle_joint_pb2
+
 from intrinsic.icon.actions import point_to_point_move_pb2
 from intrinsic.icon.equipment import equipment_utils
 from intrinsic.icon.proto import joint_space_pb2
@@ -8,7 +10,6 @@ from intrinsic.skills.proto import skill_service_pb2
 from intrinsic.skills.python import proto_utils
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
-from skills.wiggle_joint import wiggle_joint_pb2
 
 ROBOT_EQUIPMENT_SLOT: str = "robot"
 

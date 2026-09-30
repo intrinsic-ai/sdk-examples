@@ -2,14 +2,15 @@
 
 from absl import logging
 import grpc
+from services.stopwatch import stopwatch_service_pb2 as stopwatch_proto
+from services.stopwatch import stopwatch_service_pb2_grpc as stopwatch_grpc
+from skills.start_stopwatch import start_stopwatch_pb2
+
 from intrinsic.skills.python import proto_utils
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 from intrinsic.util.grpc import connection
 from intrinsic.util.grpc import interceptor
-from services.stopwatch import stopwatch_service_pb2 as stopwatch_proto
-from services.stopwatch import stopwatch_service_pb2_grpc as stopwatch_grpc
-from skills.start_stopwatch import start_stopwatch_pb2
 
 
 def make_grpc_stub(resource_handle):

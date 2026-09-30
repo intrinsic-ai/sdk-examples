@@ -2,13 +2,14 @@
 
 from absl import logging
 import grpc
+from services.random_number import random_number_pb2 as rand_num_proto
+from services.random_number import random_number_pb2_grpc as rand_num_grpc
+from skills.get_random_number import get_random_number_pb2 as get_rand_num_proto
+
 from intrinsic.skills.python import skill_interface
 from intrinsic.util.decorators import overrides
 from intrinsic.util.grpc import connection
 from intrinsic.util.grpc import interceptor
-from services.random_number import random_number_pb2 as rand_num_proto
-from services.random_number import random_number_pb2_grpc as rand_num_grpc
-from skills.get_random_number import get_random_number_pb2 as get_rand_num_proto
 
 
 def _make_grpc_stub(resource_handle):

@@ -5,8 +5,9 @@ import sys
 import time
 
 from absl import logging
-from intrinsic.resources.proto import runtime_context_pb2
 from services.configurable_service import configurable_service_pb2
+
+from intrinsic.resources.proto import runtime_context_pb2
 
 
 def main():

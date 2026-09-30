@@ -6,8 +6,8 @@ This project demonstrates a browser-based HMI client that connects to the Intrin
 
 The connection flows through a local proxy to bypass CORS (Cross-Origin Resource Sharing) and reach the Kubernetes cluster securely:
 
-1. **Browser (HMI)**: Sends HTTP requests to `localhost:5173/http-gateway/...`
-2. **Vite Proxy**: Intercepts the request, injects the **Authentication Token**, and forwards it securely to `flowstate.intrinsic.ai`.
+1. **Browser (HMI)**: Sends HTTP requests to `localhost:5173/api/http-gateway/...`
+2. **Vite Proxy**: Intercepts the request, injects the **Authentication Token**, and forwards it securely to your cluster's equipment domain (`$CTX.intrinsic.equipment`, i.e. `HMI_SERVER_URL`).
 3. **Executive Service**: Receives the command inside the remote cluster and controls the solution.
 
 ## Prerequisites
@@ -40,7 +40,7 @@ The connection flows through a local proxy to bypass CORS (Cross-Origin Resource
 
        ```bash
        curl -b "auth-proxy=$(inctl auth print-access-token --org $ORG)" -o openapi.yaml \
-       https://flowstate.intrinsic.ai/web-proxy-onprem/${ORG#*@}/$CTX/http-gateway/openapi.yaml
+       https://$CTX.intrinsic.equipment/web-proxy-onprem/${ORG#*@}/$CTX/api/http-gateway/openapi.yaml
        ```
 
     2. Generate the typescript client:
@@ -68,7 +68,7 @@ You need a fresh Access Token and the specific URL of your cluster.
 2.  **Set the Target URL:**
 
     ```bash
-    export URL="https://flowstate.intrinsic.ai/web-proxy-onprem/${ORG#*@}/$CTX"
+    export URL="https://$CTX.intrinsic.equipment/web-proxy-onprem/${ORG#*@}/$CTX"
     ```
 
 ### Step 2: Start the Web Server

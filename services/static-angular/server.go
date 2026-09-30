@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	rcpb "intrinsic/resources/proto/runtime_context_go_proto"
-	"intrinsic/util/proto/protoio"
 	"log"
 	"net/http"
 	"path"
 	"strings"
 	"text/template"
+
+	rcpb "intrinsic/resources/proto/runtime_context_go_proto"
+	"intrinsic/util/proto/protoio"
 
 	"github.com/bazelbuild/rules_go/go/runfiles"
 	"github.com/bazelbuild/rules_go/go/tools/bazel"

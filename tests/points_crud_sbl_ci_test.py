@@ -1,10 +1,11 @@
 import traceback
 
 from absl import logging
-from intrinsic.solutions import behavior_tree as bt
-from intrinsic.solutions import deployments
 from services.point_storage import point_storage_service_pb2 as point_storage_proto
 from skills.points_crud import points_crud_pb2
+
+from intrinsic.solutions import behavior_tree as bt
+from intrinsic.solutions import deployments
 
 
 def verify_result_type(

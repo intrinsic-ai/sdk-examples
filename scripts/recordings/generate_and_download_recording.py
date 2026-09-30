@@ -5,10 +5,11 @@ import sys
 from absl import app
 from absl import flags
 from absl import logging
+from scripts.recordings import recording_lib
+
 from intrinsic.logging.proto import bag_packager_service_pb2_grpc
 from intrinsic.util.grpc import auth
 from intrinsic.util.grpc import dialerutil
-from scripts.recordings import recording_lib
 
 _ORG = flags.DEFINE_string(
     "org",
@@ -31,7 +32,7 @@ def main(argv) -> None:
 
   try:
     initial_response = recording_lib.get_recording(
-        stub, recording_id, with_url=False
+        stub, recording_id, with_signed_url=False
     )
     if initial_response is None:
       logging.error("Recording with id %s does not exist.", recording_id)
@@ -41,7 +42,7 @@ def main(argv) -> None:
 
     # Fetch the recording details again to get the URL.
     final_response = recording_lib.get_recording(
-        stub, recording_id, with_url=True
+        stub, recording_id, with_signed_url=True
     )
     if final_response and final_response.url:
       logging.info("Signed URL: %s", final_response.url)

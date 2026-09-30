@@ -5,16 +5,14 @@
 from http.server import HTTPServer
 from http.server import SimpleHTTPRequestHandler
 import pathlib
-import sys
 
 from absl import logging
 from google.longrunning.operations_pb2 import ListOperationsRequest  # type: ignore
 from google.protobuf import json_format
 import grpc
+
 from intrinsic.executive.proto import executive_service_pb2_grpc
 from intrinsic.resources.proto import runtime_context_pb2
-
-logger = logging.getLogger(__name__)
 
 GRPC_INGRESS_ADDRESS = "istio-ingressgateway.app-ingress.svc.cluster.local:80"
 
@@ -89,5 +87,4 @@ def main():
 
 
 if __name__ == "__main__":
-  logging.basicConfig(stream=sys.stderr, level=logging.INFO)
   main()

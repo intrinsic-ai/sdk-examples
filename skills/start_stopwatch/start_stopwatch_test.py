@@ -1,10 +1,11 @@
 import unittest
 
-from intrinsic.skills.testing import skill_test_utils as stu
 from services.stopwatch import stopwatch_service_pb2 as stopwatch_proto
 from services.stopwatch import stopwatch_service_pb2_grpc as stopwatch_grpc
 from skills.start_stopwatch.start_stopwatch import StartStopwatch
 from skills.start_stopwatch.start_stopwatch_pb2 import StartStopwatchParams
+
+from intrinsic.skills.testing import skill_test_utils as stu
 
 
 class FakeStopwatchServicer(stopwatch_grpc.StopwatchServiceServicer):

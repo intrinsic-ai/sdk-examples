@@ -2,10 +2,11 @@ import types
 import unittest
 from unittest.mock import create_autospec
 
-from intrinsic.skills.python import skill_canceller
-from intrinsic.skills.python import skill_interface
 from skills.say_skill.say_skill import SaySkill
 from skills.say_skill.say_skill_pb2 import SaySkillParams
+
+from intrinsic.skills.python import skill_canceller
+from intrinsic.skills.python import skill_interface
 
 
 class SaySkillTest(unittest.TestCase):
